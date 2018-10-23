@@ -20,15 +20,15 @@ import {
 export default class RentalsList extends Component {
   render() {
     return (
+        <Container>
       <Row className="mt-5">
-          <Col sm="6">
+          <Col lg="12">
         <Card style={{ border: "1px solid black", display:'flex', flexDirection:'row' }}>
+        <Col lg="3">
           <CardImg
-            bottom
-            width="100%"
-            src="https://placeholdit.imgix.net/~text?txtsize=33&txt=318%C3%97180&w=318&h=100"
-            alt="Card image cap"
-          />
+           style={{border:'1px solid black'}}
+
+          /></Col>
           <CardBody>
             <CardTitle>Card title</CardTitle>
             <CardSubtitle>Card subtitle</CardSubtitle>
@@ -41,6 +41,7 @@ export default class RentalsList extends Component {
         </Card>
         </Col>
         </Row>
+        </Container>
     );
   }
 }
