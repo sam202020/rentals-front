@@ -15,6 +15,8 @@ import {
   DropdownItem, Container
 } from "reactstrap";
 
+import RentalsList from './rentalslist'
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -57,6 +59,8 @@ class App extends Component {
               </Nav>
             
           </Navbar>
+
+          <RentalsList />
           </div>
     );
   }
