@@ -22,7 +22,7 @@ export default class RentalsList extends Component {
     return (
       <Row className="mt-5">
           <Col sm="6">
-        <Card style={{ border: "1px solid black" }}>
+        <Card style={{ border: "1px solid black", display:'flex', flexDirection:'row' }}>
           <CardImg
             bottom
             width="100%"
