@@ -11,7 +11,7 @@ const options = [
 const numbers = [];
 for (let i = 0; i <= 10; i++) numbers.push({ value: i, label: i });
 
-const wePay = [
+const wePayValues = [
   { value: "gas", label: "Gas" },
   { value: "electricity", label: "Electricity" },
   { value: "water", label: "Water" },
@@ -20,27 +20,43 @@ const wePay = [
 
 export default class AddRental extends Component {
     state = {
+      type: '',
+      location: '',
+      bedrooms: '',
+      baths: '',
+      wePay: '',
+      phone: '',
+      comments: '',
+      imageURL: '',
       price: '',
       errorMessage: false
     }
 
     handleInput = e => {
         if (isNaN(e.target.value)) this.setState({errorMessage: true})
-        else this.setState({[e.target.name]: e.target.value})
+        else this.setState({errorMessage: false, [e.target.name]: e.target.value})
+    }
+
+    handleTypeInput = (select) => {
+        this.setState({ type: select.value });
+    }
+
+    handleBedroomsInput = (select) => {
+        this.setState({ bedrooms: select.value });
     }
 
   render() {
-      const { price, errorMessage } = this.state;
+      const { price, errorMessage, type, location, bedrooms, baths, phone, wePay, comments, imageURL } = this.state;
     return (
       <Container style={{ minHeight: "1000px" }}>
         <Row>
           <Col lg="12" style={{ marginTop: 20 }}>
             <h1 style={{ textAlign: "center" }}>Add Rental</h1></Col>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
-              <Select options={options} placeholder="Type" />
+              <Select options={options} placeholder="Type" onChange={this.handleTypeInput}/>
             </Col>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
-              <Select options={numbers} placeholder="Bedrooms" />
+              <Select options={numbers} placeholder="Bedrooms" onChange={this.handleBedroomsInput}/>
             </Col>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
               <Select options={numbers} placeholder="Bathrooms" />
@@ -63,7 +79,7 @@ export default class AddRental extends Component {
                 <h4 style={{color: 'red'}}>Please Enter a Number</h4></Col>}</Row>
                 <Row>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
-              <Select options={wePay} placeholder="We Pay..." />
+              <Select options={wePayValues} placeholder="We Pay..." />
             </Col>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
               <input className="form-control" placeholder="Phone Number" />
