@@ -11,6 +11,13 @@ const options = [
 const numbers = [];
 for (let i = 0; i <= 10; i++) numbers.push({ value: i, label: i });
 
+const wePay = [
+    { value: "gas", label: "Gas" },
+    { value: "electricity", label: "Electricity" },
+    { value: "water", label: "Water" },
+    { value: 'heat', label: 'Heat'}
+  ];
+
 export default class AddRental extends Component {
   render() {
     return (
@@ -25,6 +32,15 @@ export default class AddRental extends Component {
             <Select options={numbers}  placeholder="Bathrooms"/></Col><Col className='mt-4' lg={{size:4, offset:4}}>
             <input className='form-control' placeholder='Location' />
             </Col>
+            <Col className='mt-4' lg={{size:4, offset:4}}>
+            <input className='form-control' placeholder='Price' />
+            </Col>
+            <Col className='mt-4' lg={{size:4, offset:4}}>
+            <Select options={wePay}  placeholder="We Pay..."/></Col>
+            <Col className='mt-4' lg={{size:4, offset:4}}>
+            <input className='form-control' placeholder='Phone Number' /></Col><Col className='mt-4' lg={{size:4, offset:4}}>
+            <textarea className='form-control' placeholder='Comments' /></Col>
+            
           </Col>
         </Row>
       </Container>
