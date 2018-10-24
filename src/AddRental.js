@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Select from "react-select";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
 
 const options = [
   { value: "apartment", label: "Apartment" },
@@ -40,7 +40,8 @@ export default class AddRental extends Component {
             <Col className='mt-4' lg={{size:4, offset:4}}>
             <input className='form-control' placeholder='Phone Number' /></Col><Col className='mt-4' lg={{size:4, offset:4}}>
             <textarea className='form-control' placeholder='Comments' /></Col>
-            
+            <Col className='mt-4' lg={{size:6, offset:5}}>
+            <Button color="primary">Add Rental</Button></Col>
           </Col>
         </Row>
       </Container>
