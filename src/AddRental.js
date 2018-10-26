@@ -29,13 +29,18 @@ export default class AddRental extends Component {
       comments: '',
       imageURL: '',
       price: '',
-      errorMessage: false
+      errorMessagePhone: false
     }
 
     handleInput = e => {
         if (isNaN(e.target.value)) this.setState({errorMessage: true})
         else this.setState({errorMessage: false, [e.target.name]: e.target.value})
     }
+
+    handleInputPhone = e => {
+      if (isNaN(e.target.value)) this.setState({errorMessagePhone: true})
+      else this.setState({errorMessagePhone: false, [e.target.name]: e.target.value})
+  }
 
     handleTypeInput = (select) => {
         this.setState({ type: select.value });
@@ -46,7 +51,7 @@ export default class AddRental extends Component {
     }
 
   render() {
-      const { price, errorMessage, type, location, bedrooms, baths, phone, wePay, comments, imageURL } = this.state;
+      const { price, errorMessage, type, location, bedrooms, baths, phone, wePay, comments, imageURL, errorMessagePhone } = this.state;
     return (
       <Container style={{ minHeight: "1000px" }}>
         <Row>
@@ -80,13 +85,20 @@ export default class AddRental extends Component {
                 <Row>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
               <Select options={wePayValues} placeholder="We Pay..." />
-            </Col>
+            </Col></Row>
+            <Row>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
-              <input className="form-control" placeholder="Phone Number" />
+              <input value={phone} name='phone' onChange={this.handleInputPhone} className="form-control" placeholder="Phone Number" />
             </Col>
+{errorMessagePhone && <Col className="mt-4" lg='4'>
+<h4 style={{color: 'red'}}>Please Enter a Number</h4></Col>}
+
+
+            </Row>
+            <Row>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
               <textarea className="form-control" placeholder="Comments" />
-            </Col>
+            </Col></Row><Row>
             <Col className="mt-4" lg={{ size: 6, offset: 5 }}>
               <Button color="primary">Add Rental</Button>
             </Col>
