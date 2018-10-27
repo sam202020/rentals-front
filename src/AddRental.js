@@ -5,7 +5,10 @@ import Axios from "axios";
 import PhoneInput from "react-phone-number-input/basic-input";
 import ImageUploader from 'react-images-upload';
 
+import {Image} from 'cloudinary-react';
 import validator from "validator";
+
+import cloudinary from 'cloudinary-react'
 
 const options = [
   { value: "apartment", label: "Apartment" },
@@ -176,6 +179,13 @@ export default class AddRental extends Component {
       email
     );
   };
+
+  uploadWidget = () => {
+    cloudinary.openUploadWidget({ cloud_name: 'djbxlkyg0', upload_preset: 'xz37we5w', tags:['rental']},
+        function(error, result) {
+            console.log(result);
+        });
+ }
 
   render() {
     const {
@@ -392,8 +402,15 @@ export default class AddRental extends Component {
                 	onChange={this.addImage}
                 	imgExtension={['.jpg', '.gif', '.png', '.gif']}
                 	maxFileSize={5242880}
-            /> */}</Col></Row><Row><Col className="mt-2" lg={{size:0, offset:5}}>
-            <input className='mt-3' type='file' onChange={this.addImage} multiple /></Col></Row>
+            /> */}</Col></Row><Row><Col className="mt-2" lg={{size:1, offset:5}}>
+
+              <Button color="secondary" size='md' onClick={this.uploadWidget}>
+                <h4>Add Pictures</h4>
+              </Button>
+            {/* <Image cloudName="demo" publicId="sample" width="300" crop="scale"/>
+            <input className='mt-3' type='file' onChange={this.addImage} multiple /> */}
+            
+            </Col></Row>
             
           
           <Row>
