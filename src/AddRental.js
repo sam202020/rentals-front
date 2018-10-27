@@ -3,6 +3,7 @@ import Select from "react-select";
 import { Container, Row, Col, Button } from "reactstrap";
 import Axios from "axios";
 import PhoneInput from "react-phone-number-input/basic-input";
+import ImageUploader from 'react-images-upload';
 
 import validator from "validator";
 
@@ -24,6 +25,7 @@ const wePayValues = [
 
 export default class AddRental extends Component {
   state = {
+    pictures: [],
     value: "",
     type: "",
     location: "",
@@ -104,8 +106,16 @@ export default class AddRental extends Component {
     this.setState({ comments: e.target.value });
   };
 
-  addImage = () => {
-    
+  addImage = e => {
+    console.log(e)
+    let arr = [];
+    if (e.target.value.length > 0) {
+      console.log(e.target.value)
+    }
+    console.log(e.target.value)
+    this.setState({
+      pictures: this.state.pictures.concat(e.target.value)
+  });
   }
 
   handleSubmit = e => {
@@ -344,6 +354,7 @@ export default class AddRental extends Component {
           <Row>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
               <input
+                type='email'
                 value={email}
                 name="email"
                 onChange={this.handleInputEmail}
@@ -372,11 +383,19 @@ export default class AddRental extends Component {
           </Row>
           <Row>
             <Col className="mt-4 text-center" lg='12'>
-              <Button color="secondary" size='md' onClick={this.addImage}>
-                Add Picture
-              </Button>
-            </Col>
-          </Row>
+              {/* <Button color="secondary" size='md' onClick={this.addImage}> */}
+                <h4>Add Pictures</h4>
+              {/* </Button> */}
+              {/* <ImageUploader
+                	withIcon={true}
+                	buttonText='Choose images'
+                	onChange={this.addImage}
+                	imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                	maxFileSize={5242880}
+            /> */}</Col></Row><Row><Col className="mt-2" lg={{size:0, offset:5}}>
+            <input className='mt-3' type='file' onChange={this.addImage} multiple /></Col></Row>
+            
+          
           <Row>
             <Col className="mt-4 text-center" lg={{ size: 8, offset: 2 }}>
               <Button color="primary" size='lg' block onClick={this.handleSubmit}>
