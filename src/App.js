@@ -35,10 +35,10 @@ class App extends Component {
       })
   }
 
-  handleSubmitRental = () => {
+  handleSubmitRental = (type, location, bedrooms, baths, wePay, phone, comments, imageURL, price, email) => {
     
     Axios
-      .post('http://localhost:3001')
+      .post('http://localhost:3001', { type, location, bedrooms, baths, wePay, phone, comments, imageURL, price, email })
       .then(response => {
         console.log(response)
       })

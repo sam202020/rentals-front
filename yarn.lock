@@ -6990,6 +6990,17 @@ react-error-overlay@^5.0.5:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.0.5.tgz#716ff1a92fda76bb89a39adf9ce046a5d740e71a"
 
+react-flip-move@^3.0.1:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-flip-move/-/react-flip-move-3.0.3.tgz#3065b0b9e622ae73953aba725f8feed8e4643667"
+
+react-images-upload@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-images-upload/-/react-images-upload-1.2.3.tgz#bfa3a21c9be3f3653e5626de495a930583a67449"
+  dependencies:
+    react "^16.2.0"
+    react-flip-move "^3.0.1"
+
 react-input-autosize@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
@@ -7166,7 +7177,7 @@ react-validation@^3.0.7:
     shallow-equal "^1.0.0"
     uuid "^3.1.0"
 
-react@^16.0.0:
+react@^16.0.0, react@^16.2.0:
   version "16.6.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.6.0.tgz#b34761cfaf3e30f5508bc732fb4736730b7da246"
   dependencies:
@@ -8592,6 +8603,10 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validator@^10.8.0:
+  version "10.8.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-10.8.0.tgz#8acb15a5c39411cbc8ef2be0c98c2514da4410a7"
 
 value-equal@^0.4.0:
   version "0.4.0"
