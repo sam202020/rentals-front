@@ -9,6 +9,7 @@ import {Image} from 'cloudinary-react';
 import validator from "validator";
 
 import cloudinary from 'cloudinary-react'
+import Dropzone from 'react-dropzone';
 
 const options = [
   { value: "apartment", label: "Apartment" },
@@ -181,11 +182,36 @@ export default class AddRental extends Component {
   };
 
   uploadWidget = () => {
-    cloudinary.openUploadWidget({ cloud_name: 'djbxlkyg0', upload_preset: 'xz37we5w', tags:['rental']},
-        function(error, result) {
-            console.log(result);
+    
+       window.cloudinary.openUploadWidget({ cloud_name: 'djbxlkyg0', upload_preset: 'xz37we5w', tags:['rental']},
+        (error, result) => {
+            if (error) console.error(error);
+            else {
+              let urlArr = [];
+              for (let pic of result) {
+                urlArr.push(pic.secure_url);
+              }
+              this.setState((state) => {
+                let newPicArr = state.pictures.concat(urlArr)
+                return {pictures: newPicArr}
+              }, () => console.log(this.state.pictures));
+            }
         });
+     
  }
+
+ onPhotoSelected(accFiles, rejFiles) {
+  const cloundinaryUrl = 'https://api.cloudinary.com/v1_1/djbxlkyg0/upload'
+
+  for (let file of accFiles) {
+
+      const fileName = file.name;
+      Axios
+        .post(cloundinaryUrl, {file: file, upload_preset: 'xz37we5w', multiple: true})
+        .then(res => console.log(res))
+        .catch(err => console.error(err));
+  }
+}
 
   render() {
     const {
@@ -393,24 +419,97 @@ export default class AddRental extends Component {
           </Row>
           <Row>
             <Col className="mt-4 text-center" lg='12'>
-              {/* <Button color="secondary" size='md' onClick={this.addImage}> */}
+              <Button color="secondary" size='md' onClick={this.uploadWidget}>
                 <h4>Add Pictures</h4>
-              {/* </Button> */}
+              </Button>
               {/* <ImageUploader
                 	withIcon={true}
                 	buttonText='Choose images'
                 	onChange={this.addImage}
                 	imgExtension={['.jpg', '.gif', '.png', '.gif']}
                 	maxFileSize={5242880}
-            /> */}</Col></Row><Row><Col className="mt-2" lg={{size:1, offset:5}}>
+            /> */}</Col></Row>
+            { this.state.pictures.length > 0 && ( <Row><Col className="mt-2 text-center" lg={{size:12}}>
 
-              <Button color="secondary" size='md' onClick={this.uploadWidget}>
+              <h4>Pictures uploaded</h4>
+              {/* <Button color="secondary" size='md' onClick={this.uploadWidget}>
                 <h4>Add Pictures</h4>
-              </Button>
+              </Button> */}
+              {/* <Dropzone
+                    
+                    multiple={true}
+                    accept="image/*"
+                    
+                    onDrop={this.onPhotoSelected}
+                >
+                 <p>Try dropping some files here, or click to select files to upload.</p>
+                    {/* <div id="direct_upload">
+                        <h1>New Photo</h1>
+                        <h2>
+                            Direct upload from the browser with React File
+                            Upload
+                        </h2>
+                        <p>
+                            You can also drag and drop an image file into the
+                            dashed area.
+                        </p>
+                        <form>
+                            <div class="form_line">
+                                <label path="title">Title:</label>
+                                <div class="form_controls">
+                                    <input
+                                        type="text"
+                                        ref={titleEl =>
+                                            (this.titleEl = titleEl)
+                                        }
+                                        class="form-control"
+                                        placeholder="Title"
+                                    />
+                                </div>
+                            </div>
+                            <div class="form_line">
+                                <label>Image:</label>
+                                <div class="form_controls">
+                                    <div class="upload_button_holder">
+                                        <label
+                                            class="upload_button"
+                                            for="fileupload"
+                                        >
+                                            Upload
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="fileupload"
+                                            accept="image/*"
+                                            multiple="multiple"
+                                            ref={fileInputEl =>
+                                                (this.fileInputEl = fileInputEl)
+                                            }
+                                            onChange={() =>
+                                                this.onPhotoSelected(
+                                                    this.fileInputEl.files
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <h2>Status</h2>
+                    </div> */}
+                    {/* {this.props.uploadedPhotos.map(uploadedPhoto => {
+                        return (
+                            <UploadedPhotoStatusContainer
+                                key={uploadedPhoto.public_id}
+                                uploadedPhoto={uploadedPhoto}
+                            />
+                        );
+                    })} */}
+                {/* </Dropzone>  */}
             {/* <Image cloudName="demo" publicId="sample" width="300" crop="scale"/>
             <input className='mt-3' type='file' onChange={this.addImage} multiple /> */}
             
-            </Col></Row>
+            </Col></Row>) }
             
           
           <Row>
