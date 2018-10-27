@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Select from "react-select";
 import { Container, Row, Col, Button } from "reactstrap";
 import Axios from "axios";
+import PhoneInput from "react-phone-number-input/basic-input"
 
 const options = [
   { value: "apartment", label: "Apartment" },
@@ -21,6 +22,7 @@ const wePayValues = [
 
 export default class AddRental extends Component {
   state = {
+    value: '',
     type: "",
     location: "",
     bedrooms: "",
@@ -30,18 +32,28 @@ export default class AddRental extends Component {
     comments: "",
     imageURL: "",
     price: "",
-    errorMessagePhone: false
+    email: '',
+    errorMessagePhone: false,
+    errorMessages: {
+      type:false,
+      bedroom:false,
+      bath:false,
+      location:false,
+      phone:false
+    }
   };
 
-  handleInput = e => {
-    if (isNaN(e.target.value)) this.setState({ errorMessage: true });
-    else
-      this.setState({ errorMessage: false, [e.target.name]: e.target.value });
+  handleInput = value => {
+    // if (isNaN(e.target.value)) this.setState({ errorMessage: true });
+    // else
+    //   this.setState({ errorMessage: false, [e.target.name]: e.target.value });
+    if (value.length == 11) return;
+    this.setState({ phone: value });
   };
 
-  handleInputPhone = e => {
-    if (isNaN(e.target.value)) this.setState({ errorMessagePhone: true });
-    else
+  handleInputEmail = e => {
+    // if (isNaN(e.target.value)) this.setState({ errorMessagePhone: true });
+    // else
       this.setState({
         errorMessagePhone: false,
         [e.target.name]: e.target.value
@@ -49,19 +61,20 @@ export default class AddRental extends Component {
   };
 
   handleTypeInput = select => {
-    this.setState({ type: select.value });
+    this.setState(state => ({ type: select.value, errorMessages: {...state.errorMessages, type: false} }));
   };
 
   handleBedroomsInput = select => {
-    this.setState({ bedrooms: select.value });
+    this.setState(state => ({ bedrooms: select.value, errorMessages: {...state.errorMessages, bedroom: false} }));
   };
 
   handleBathInput = select => {
-    this.setState({ baths: select.value });
+    this.setState(state => ({ baths: select.value, errorMessages: {...state.errorMessages, bath: false} }));
   };
 
   handleLocationChange = e => {
-    this.setState({location: e.target.value});
+    const value = e.target.value 
+    this.setState(state => ({ location: value, errorMessages: {...state.errorMessages, location: false} }));
   }
 
   handleWePay = select => {
@@ -74,8 +87,37 @@ export default class AddRental extends Component {
   }
 
    handleSubmit = e => {
-     const { type, location, bedrooms, baths, wePay, phone, comments, imageURL, price } = this.state;
     e.preventDefault();
+    const { type, location, bedrooms, baths, wePay, phone, comments, imageURL, price, email } = this.state;
+    if(!type) {
+      this.setState({errorMessages:{type:true}});
+      return
+  
+    }
+    if(!bedrooms) {
+      
+      this.setState({errorMessages:{bedroom:true}});
+      return
+  
+    }
+
+    if(!baths) {
+      this.setState({errorMessages:{bath:true}});
+      return
+    }
+
+    if(!location) {
+      this.setState({errorMessages:{location:true}});
+      return
+    }
+
+    if(!phone && !email) {
+      this.setState({errorMessages:{phone:true}})
+      return
+    } else if (!phone) {
+      
+    }
+
     this.props.addRental()
   };
 
@@ -91,34 +133,61 @@ export default class AddRental extends Component {
       wePay,
       comments,
       imageURL,
-      errorMessagePhone
+      errorMessagePhone, 
+      email,
+      errorMessages
     } = this.state;
     return (
       <Container style={{ minHeight: "1000px" }}>
+      <form>
         <Row>
           <Col lg="12" style={{ marginTop: 20 }}>
             <h1 style={{ textAlign: "center" }}>Add Rental</h1>
-          </Col>
-          <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
+          </Col></Row><Row>
+            <Col className="mt-4" lg={{ size: 1, offset: 3 }}style={{color:'red', textAlign:'right'}}><h4>*</h4></Col>
+          <Col className="mt-4" lg={{ size: 4}}>
             <Select
               options={options}
               placeholder="Type"
               onChange={this.handleTypeInput}
             />
           </Col>
-          <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
+          {errorMessages.type && (
+            <Col className="mt-4" lg="4">
+              <h4 style={{ color: "red" }}>Required</h4>
+            </Col>
+          )}</Row><Row>
+          <Col className="mt-4" lg={{ size: 1, offset: 3 }}style={{color:'red', textAlign:'right'}}><h4>*</h4></Col>
+          <Col className="mt-4" lg={{ size: 4 }}>
             <Select
               options={numbers}
               placeholder="Bedrooms"
               onChange={this.handleBedroomsInput}
             />
           </Col>
-          <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
+          {errorMessages.bedroom && (
+            <Col className="mt-4" lg="4">
+              <h4 style={{ color: "red" }}>Required</h4>
+            </Col>
+          )}</Row><Row>
+          <Col className="mt-4" lg={{ size: 1, offset: 3 }}style={{color:'red', textAlign:'right'}}><h4>*</h4></Col>
+          <Col className="mt-4" lg={{ size: 4}}>
             <Select options={numbers} placeholder="Bathrooms" onChange={this.handleBathInput}/>
           </Col>
-          <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
+          {errorMessages.bath && (
+            <Col className="mt-4" lg="4">
+              <h4 style={{ color: "red" }}>Required</h4>
+            </Col>
+          )}</Row><Row>
+          <Col className="mt-4" lg={{ size: 1, offset: 3 }}style={{color:'red', textAlign:'right'}}><h4>*</h4></Col>
+          <Col className="mt-4" lg={{ size: 4}}>
             <input className="form-control" placeholder="Location" value={location} name='location' onChange={this.handleLocationChange}/>
           </Col>
+          {errorMessages.location && (
+            <Col className="mt-4" lg="4">
+              <h4 style={{ color: "red" }}>Required</h4>
+            </Col>
+          )}
         </Row>
         <Row>
           <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
@@ -151,20 +220,32 @@ export default class AddRental extends Component {
           </Col>
         </Row>
         <Row>
-          <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
-            <input
-              value={phone}
-              name="phone"
-              onChange={this.handleInputPhone}
-              className="form-control"
-              placeholder="Phone Number"
-            />
+        <Col className="mt-4" lg={{ size: 1, offset: 3 }}style={{color:'red', textAlign:'right'}}><h4>*</h4></Col>
+          <Col className="mt-4" lg={{ size: 4}}>
+          <PhoneInput
+        country="US"
+        value={ phone }
+        onChange={ (value) => this.handleInput(value)} placeholder='Phone Number'
+        style={{width: '100%'}}/>
+            
           </Col>
-          {errorMessagePhone && (
+          {errorMessages.phone && (
             <Col className="mt-4" lg="4">
-              <h4 style={{ color: "red" }}>Please Enter a Number</h4>
+              <h4 style={{ color: "red" }}>Phone Number or Email Address Required</h4>
             </Col>
           )}
+        </Row><Row>
+        <Col className="mt-4" lg={{ size: 4,offset:4}}>
+        <input
+              value={email}
+              name="email"
+              onChange={this.handleInputEmail}
+              className="form-control"
+              placeholder="...or Email Address"
+            />
+</Col>
+
+
         </Row>
         <Row>
           <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
@@ -175,7 +256,7 @@ export default class AddRental extends Component {
           <Col className="mt-4" lg={{ size: 6, offset: 5 }}>
             <Button color="primary" onClick={this.handleSubmit}>Add Rental</Button>
           </Col>
-        </Row>
+        </Row></form>
       </Container>
     );
   }
