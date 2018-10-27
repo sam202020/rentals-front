@@ -1,36 +1,34 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SUBREDDIT, INVALIDATE_SUBREDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
+    REQUEST_RENTALS, RECEIVE_RENTALS, ADD_RENTAL, SELECT_RENTAL
 } from '../actions'
 
-const selectedSubreddit = (state = 'reactjs', action) => {
-  switch (action.type) {
-    case SELECT_SUBREDDIT:
-      return action.subreddit
-    default:
-      return state
-  }
-}
+// const selectedSubreddit = (state = 'reactjs', action) => {
+//   switch (action.type) {
+//     case SELECT_SUBREDDIT:
+//       return action.subreddit
+//     default:
+//       return state
+//   }
+// }
 
-const posts = (state = {
+const rentals = (state = {
   isFetching: false,
-  didInvalidate: false,
   items: []
 }, action) => {
   switch (action.type) {
-    case INVALIDATE_SUBREDDIT:
-      return {
-        ...state,
-        didInvalidate: true
-      }
-    case REQUEST_POSTS:
+    // case INVALIDATE_SUBREDDIT:
+    //   return {
+    //     ...state,
+    //     didInvalidate: true
+    //   }
+    case REQUEST_RENTALS:
       return {
         ...state,
         isFetching: true,
         didInvalidate: false
       }
-    case RECEIVE_POSTS:
+    case RECEIVE_RENTALS:
       return {
         ...state,
         isFetching: false,
@@ -38,6 +36,11 @@ const posts = (state = {
         items: action.posts,
         lastUpdated: action.receivedAt
       }
+      case ADD_RENTAL:
+        return {
+          ...state,
+          isFetching: true,
+        }
     default:
       return state
   }

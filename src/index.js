@@ -11,13 +11,13 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 
-import reducer from './reducers'
+// import reducer from './reducers'
 
 const middleware = [ thunk ]
 middleware.push(createLogger())
 
 const store = createStore(
-    reducer,
+    
     applyMiddleware(...middleware)
   )
 
