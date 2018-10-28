@@ -87,6 +87,12 @@ export default class Rental extends Component {
     String.prototype.capitalize = function() {
       return this.charAt(0).toUpperCase() + this.slice(1);
     };
+    let images = imageURL.map(img => {
+        let imgObj = {};
+        imgObj.src = img;
+        imgObj.caption = 'Slide'
+        return imgObj;
+    })
     return (
       <div>
         <Row className="mt-5">
@@ -99,7 +105,7 @@ export default class Rental extends Component {
               }}
             >
               <Col lg="3">
-                <UncontrolledCarousel captionText="text" items={items} />
+                <UncontrolledCarousel captionText="Rental Picture" items={images} />
               </Col>
               <CardBody>
                 <CardTitle>
@@ -109,12 +115,12 @@ export default class Rental extends Component {
                   <Col className="mt-3 text-center"><h4>{bedrooms} Bedrooms</h4></Col>
                   <Col className="mt-3 text-center"><h4>{baths} Bathroom</h4></Col></Row><Row>
                   <Col className="mt-4 text-center"><h3>{location}</h3> </Col></Row><Row>
-                  <Col className="mt-4"><h5>
+                  <Col className="mt-4 text-center"><h4>
                     Price: {price}.00
-                    </h5>                  </Col></Row>
-                  <div className="mt-3">We Pay: {this.wePayFormat(wePay)} </div>
-                  <div className="mt-3 text-center"><a href={'tel:' + phone}> Call {this.phoneFormat(phone)}</a></div>
-                  <div className="mt-3">{email}</div>
+                    </h4>                  </Col>
+                  <Col className="mt-4 text-center">We Pay: {this.wePayFormat(wePay)} </Col></Row><Row>
+                  <Col className="mt-4 text-center"><a href={'tel:' + phone}> Call {this.phoneFormat(phone)}</a></Col>
+                  <div className="mt-3">{email}</div></Row>
                 </CardTitle>
                 <CardSubtitle />
                 <CardText className='text-center'>{comments}</CardText>
