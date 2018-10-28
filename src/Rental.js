@@ -64,10 +64,10 @@ export default class Rental extends Component {
       return this.charAt(0).toUpperCase() + this.slice(1);
     };
     let wePayStr = "";
-    for (let pay of wePayArr)
-      if (wePayArr.indexOf(pay) !== wePayArr.length - 1)
-        wePayStr += pay.capitalize() + ", ";
+    for (let pay of wePayArr) {
+      if (wePayArr.indexOf(pay) !== wePayArr.length - 1) wePayStr += pay.capitalize() + ", ";
       else wePayStr += pay.capitalize();
+    }
     return wePayStr;
   };
   render() {
@@ -103,21 +103,21 @@ export default class Rental extends Component {
               </Col>
               <CardBody>
                 <CardTitle>
-                  {type.capitalize()}
-                  <div className="mt-2">{bedrooms} Bedrooms</div>
-                  <div className="mt-2">{baths} Baths</div>
-                  <div className="mt-2">Location: {location} </div>
-                  <div className="mt-2">
-                    Price: {price}
-                    .00{" "}
-                  </div>
-                  <div className="mt-2">We Pay: {this.wePayFormat(wePay)} </div>
-                  <div className="mt-2">Contact: {this.phoneFormat(phone)}</div>
-                  <div className="mt-2">{email}</div>
+                    <Row>
+                    <Col className="mt-2 text-center"><h2>
+                  {type.capitalize()}</h2></Col>
+                  <Col className="mt-3 text-center"><h4>{bedrooms} Bedrooms</h4></Col>
+                  <Col className="mt-3 text-center"><h4>{baths} Bathroom</h4></Col></Row><Row>
+                  <Col className="mt-4 text-center"><h3>{location}</h3> </Col></Row><Row>
+                  <Col className="mt-4"><h5>
+                    Price: {price}.00
+                    </h5>                  </Col></Row>
+                  <div className="mt-3">We Pay: {this.wePayFormat(wePay)} </div>
+                  <div className="mt-3 text-center"><a href={'tel:' + phone}> Call {this.phoneFormat(phone)}</a></div>
+                  <div className="mt-3">{email}</div>
                 </CardTitle>
                 <CardSubtitle />
-                <CardText>Comments: {comments}</CardText>
-                <Button>More info</Button>
+                <CardText className='text-center'>{comments}</CardText>
               </CardBody>
             </Card>
           </Col>
