@@ -4,6 +4,7 @@ import { Container, Row, Col, Button } from "reactstrap";
 import Axios from "axios";
 import PhoneInput from "react-phone-number-input/basic-input";
 import ImageUploader from 'react-images-upload';
+import {Redirect} from 'react-router-dom';
 
 import {Image} from 'cloudinary-react';
 import validator from "validator";
@@ -29,6 +30,7 @@ const wePayValues = [
 
 export default class AddRental extends Component {
   state = {
+    redirect: false,
     pictures: [],
     value: "",
     type: "",
@@ -132,7 +134,7 @@ export default class AddRental extends Component {
       wePay,
       phone,
       comments,
-      imageURL,
+      pictures,
       price,
       email
     } = this.state;
@@ -167,7 +169,7 @@ export default class AddRental extends Component {
       }
     }
 
-    this.props.addRental(
+    const status = this.props.addRental(
       type,
       location,
       bedrooms,
@@ -175,10 +177,12 @@ export default class AddRental extends Component {
       wePay,
       phone,
       comments,
-      imageURL,
+      pictures,
       price,
       email
     );
+    if (status === '200') this.setState({redirect: true});
+    else this.setState({ errorMessages: { bath: true } });
   };
 
   uploadWidget = () => {
@@ -227,8 +231,10 @@ export default class AddRental extends Component {
       imageURL,
       errorMessagePhone,
       email,
-      errorMessages
+      errorMessages, 
+      redirect
     } = this.state;
+    if (redirect) return (<Redirect push to='/' />);
     const isEmail = validator.isEmail(email);
     let isError = false;
     for (let i in errorMessages) if (errorMessages[i] === true) isError = true; 

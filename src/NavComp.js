@@ -40,14 +40,14 @@ export default class NavComp extends Component {
           
             <Nav className="ml-5 nav-fill w-100" navbar>
               <NavItem>
-                <NavLink href="/components/" style={{fontWeight:'bold', color:'blue'}}>Rentals</NavLink>
+                <NavLink href="/" style={{fontWeight:'bold', color:'blue'}}>Rentals</NavLink>
               </NavItem>
               <NavItem className="ml-5">
                 <NavLink href="https://github.com/reactstrap/reactstrap" style={{fontWeight:'bold', color:'blue'}}>
                   For Sale
                 </NavLink>
               </NavItem>
-              <UncontrolledDropdown nav inNavbar>
+              {/* <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle className="ml-5" nav caret style={{fontWeight:'bold', color:'blue'}}>
                   Add a Listing
                 </DropdownToggle>
@@ -55,7 +55,12 @@ export default class NavComp extends Component {
                   <DropdownItem>Rental</DropdownItem>
                   <DropdownItem>For Sale</DropdownItem>
                 </DropdownMenu>
-              </UncontrolledDropdown>
+              </UncontrolledDropdown> */}
+              <NavItem className="ml-5">
+                <NavLink href="/add-rental" style={{fontWeight:'bold', color:'blue'}}>
+                  Add a Listing
+                </NavLink>
+              </NavItem>
             </Nav>
           
         </Navbar>
