@@ -22,12 +22,13 @@ import {
   Row,
   Col,
   Carousel,
-  UncontrolledCarousel
+  UncontrolledCarousel,
+  Alert
 } from "reactstrap";
 import house1 from "./default-house-1.jpg";
 import house2 from "./default-house-2.jpg";
 import house3 from "./default-house-3.jpg";
-
+import NavComp from "./NavComp";
 import Rental from './Rental';
 
 const items = [

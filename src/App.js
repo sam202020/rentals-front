@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import { BrowserRouter as Router } from "react-router-dom";
+import PropTypes from "prop-types";
 import "./App.css";
 import {
   Collapse,
@@ -18,11 +19,20 @@ import {
 import NavComp from "./NavComp";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Axios from "axios";
+import { connect } from "react-redux";
+import { locationChange } from "./actions";
 
 import RentalsList from "./RentalsList";
 import AddRental from "./AddRental";
+import { withRouter } from "react-router";
 
 class App extends Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  };
+
   state = {
     rentals: []
   };
@@ -76,8 +86,11 @@ class App extends Component {
   };
 
   render() {
+    const { match, location, history } = this.props;
+    console.log(this.props);
     return (
       <div>
+        You are now at {location.pathname}
         <NavComp />
         <Switch>
           <Route
@@ -103,4 +116,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

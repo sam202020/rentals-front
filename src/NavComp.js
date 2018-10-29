@@ -12,47 +12,43 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem, Container
+  DropdownItem,
+  Container
 } from "reactstrap";
 
-import RentalsList from './RentalsList'
+import RentalsList from "./RentalsList";
+import { connect } from 'react-redux';
+import { locationChange } from './actions'
+
+import { Link } from 'react-router-dom';
 
 export default class NavComp extends Component {
-  constructor(props) {
-    super(props);
-
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      isOpen: false
-    };
-  }
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
+  
   render() {
     return (
-        <div className="container-fluid">
-        <Navbar color="light" light expand="md">
-          <NavbarBrand href="/" style={{color:'blue'}}>Lakewood Rentals</NavbarBrand>
-          
-          
-            <Nav className="ml-5 nav-fill w-100" navbar>
-              <NavItem>
-                <NavLink href="/" style={{fontWeight:'bold', color:'blue'}}>Rentals</NavLink>
-              </NavItem>
-              <NavItem className="ml-5">
-                <NavLink href="/add-rental" style={{fontWeight:'bold', color:'blue'}}>
-                  Add a Listing
-                </NavLink>
-              </NavItem>
-            </Nav>
-          
-        </Navbar>
+      <div className="container-fluid">
+        <Navbar color="light" light expand="lg">
+        <Link to='/'>
+          <NavbarBrand style={{ color: "blue" }}>
+            Lakewood Rentals
+          </NavbarBrand></Link>
 
-        
-        </div>
-    )
+          <Nav className="ml-5 nav-fill w-100" navbar>
+            <NavItem>
+            <Link to='/' style={{ fontWeight: "bold", color: "blue" }}>
+              
+                Rentals
+            </Link>
+            </NavItem>
+            <NavItem className="ml-5">
+            <Link to='/add-rental' style={{ fontWeight: "bold", color: "blue" }}>
+             
+                Add a Listing
+              </Link>
+            </NavItem>
+          </Nav>
+        </Navbar>
+      </div>
+    );
   }
 }
