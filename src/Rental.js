@@ -11,10 +11,10 @@ import {
   UncontrolledCarousel
 } from "reactstrap";
 
-import house1 from "./default-house-1.jpg";
-import house2 from "./default-house-2.jpg";
-import house3 from "./default-house-3.jpg";
-
+import house1 from "./images/default-house-1.jpg";
+import house2 from "./images/default-house-2.jpg";
+import house3 from "./images/default-house-3.jpg";
+import defaultApt from './images/default-apt.jpg'
 
 export default class Rental extends Component {
   phoneFormat = number => {
@@ -35,12 +35,37 @@ export default class Rental extends Component {
       return this.charAt(0).toUpperCase() + this.slice(1);
     };
     let wePayStr = "";
-    for (let pay of wePayArr) {
-      if (wePayArr.indexOf(pay) !== wePayArr.length - 1) wePayStr += pay.capitalize() + ", ";
-      else wePayStr += pay.capitalize();
+    if (typeof wePayArr === 'object') {
+      for (let pay of wePayArr) {
+        if (wePayArr.indexOf(pay) !== wePayArr.length - 1) wePayStr += pay.capitalize() + ", ";
+        else wePayStr += pay.capitalize();
+      }
+    } else {
+      const conversionTable = {
+        G: 'Gas',
+        E: 'Electricity',
+        W: 'Water',
+        H: 'Heat'
+      }
+      for (let pay of wePayArr) {
+        if (wePayArr.indexOf(pay) !== wePayArr.length - 1) wePayStr += pay.capitalize() + ", ";
+        else wePayStr += pay.capitalize();
+      }
+      const re = new RegExp(Object.keys(conversionTable).join("|"),"gi");
+      wePayStr = wePayStr.replace(re, function(matched){
+        return mapObj[matched];
+      });
     }
     return wePayStr;
   };
+
+  typeFormat = type => {
+    if (type == 'A') return 'apartment';
+    if (type == 'H') return 'house';
+    if (type == T) return 'townhouse';
+    return type;
+  }
+
   render() {
     const {
       type,
@@ -58,12 +83,17 @@ export default class Rental extends Component {
     String.prototype.capitalize = function() {
       return this.charAt(0).toUpperCase() + this.slice(1);
     };
-    let images = imageURL.map(img => {
-        let imgObj = {};
-        imgObj.src = img;
-        imgObj.caption = 'Slide'
-        return imgObj;
-    })
+    let images;
+    let defaultAptImg;
+    if (imageURL[0]) {
+       images = imageURL.map(img => {
+          let imgObj = {};
+          imgObj.src = img;
+          return imgObj;
+      })
+    }
+    console.log(images)
+    console.log(imageURL)
     return (
       <div>
         <Row className="mt-5">
@@ -75,21 +105,32 @@ export default class Rental extends Component {
                 flexDirection: "row"
               }}
             >
-              <Col lg="3">
+              <Col lg="3" style={{display: 'flex', flexDirection:'column', justifyContent:'center', textAlign:'center'}}>
+              
+                
+                
+                
+                
+
+              
+              {images ? 
                 <UncontrolledCarousel captionText="Rental Picture" items={images} />
+              : <>
+    <img src={defaultApt} style={{maxWidth:'100%'}}/><p style={{fontSize:'10px'}}>Sample Image</p></>}
               </Col>
               <CardBody>
                 <CardTitle>
                     <Row>
                     <Col className="mt-2 text-center"><h2>
                   {type.capitalize()}</h2></Col>
-                  <Col className="mt-3 text-center"><h4>{bedrooms} Bedrooms</h4></Col>
-                  <Col className="mt-3 text-center"><h4>{baths} Bathroom</h4></Col></Row><Row>
+                  <Col className="mt-3 text-center"><h4 style={{color:'gray'}}>{bedrooms} Bedrooms</h4></Col>
+                  <Col className="mt-3 text-center"><h4 style={{color:'gray'}}>{baths} Bathroom</h4></Col></Row><Row>
                   <Col className="mt-4 text-center"><h3>{location}</h3> </Col></Row><Row>
-                  <Col className="mt-4 text-center"><h4>
-                    Price: {price}.00
-                    </h4>                  </Col>
-                  <Col className="mt-4 text-center">We Pay: {this.wePayFormat(wePay)} </Col></Row><Row>
+                  <Col className="mt-4 text-center">
+                    {price ? <h4>${price}.00</h4> : <h4>Please Call</h4>}
+        
+                                    </Col>
+                  <Col className="mt-4 text-center"><h4 style={{color:'gray'}}>We Pay: {this.wePayFormat(wePay)} </h4></Col></Row><Row>
                   <Col className="mt-4 text-center"><a href={'tel:' + phone}> Call {this.phoneFormat(phone)}</a></Col>
                   <div className="mt-3">{email}</div></Row>
                 </CardTitle>

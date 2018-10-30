@@ -3,14 +3,14 @@ import Select from "react-select";
 import { Container, Row, Col, Button } from "reactstrap";
 import Axios from "axios";
 import PhoneInput from "react-phone-number-input/basic-input";
-import ImageUploader from 'react-images-upload';
-import {Redirect} from 'react-router-dom';
+import ImageUploader from "react-images-upload";
+import { Redirect } from "react-router-dom";
 
-import {Image} from 'cloudinary-react';
+import { Image } from "cloudinary-react";
 import validator from "validator";
 
-import cloudinary from 'cloudinary-react'
-import Dropzone from 'react-dropzone';
+import cloudinary from "cloudinary-react";
+import Dropzone from "react-dropzone";
 
 const options = [
   { value: "apartment", label: "Apartment" },
@@ -28,6 +28,11 @@ const wePayValues = [
   { value: "heat", label: "Heat" }
 ];
 
+const yesOrNoValues = [
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
+]
+
 export default class AddRental extends Component {
   state = {
     redirect: false,
@@ -44,6 +49,7 @@ export default class AddRental extends Component {
     price: "",
     email: "",
     errorMessage: "",
+    hud: false,
     errorMessages: {
       type: false,
       bedroom: false,
@@ -55,18 +61,17 @@ export default class AddRental extends Component {
   };
 
   handleInput = value => {
-    
     if (value.length === 11) return;
     this.setState({ phone: value, errorMessages: { phone: false } });
   };
 
   handleInputPrice = e => {
     if (isNaN(e.target.value)) this.setState({ errorMessage: true });
-    else this.setState({ errorMessage: false, [e.target.name]: e.target.value });
+    else
+      this.setState({ errorMessage: false, [e.target.name]: e.target.value });
   };
 
   handleInputEmail = e => {
-    
     this.setState({
       errorMessagePhone: false,
       [e.target.name]: e.target.value,
@@ -112,17 +117,21 @@ export default class AddRental extends Component {
     this.setState({ comments: e.target.value });
   };
 
+  handleHud = select => {
+    this.setState({ hud: select.value });
+  };
+
   addImage = e => {
-    console.log(e)
+    console.log(e);
     let arr = [];
     if (e.target.value.length > 0) {
-      console.log(e.target.value)
+      console.log(e.target.value);
     }
-    console.log(e.target.value)
+    console.log(e.target.value);
     this.setState({
       pictures: this.state.pictures.concat(e.target.value)
-  });
-  }
+    });
+  };
 
   handleSubmit = e => {
     e.preventDefault();
@@ -136,7 +145,8 @@ export default class AddRental extends Component {
       comments,
       pictures,
       price,
-      email
+      email,
+      hud
     } = this.state;
     if (!type) {
       this.setState({ errorMessages: { type: true } });
@@ -179,43 +189,49 @@ export default class AddRental extends Component {
       comments,
       pictures,
       price,
-      email
+      email,
+      hud
     );
-    if (status === '200') this.setState({redirect: true});
+    if (status === "200") this.setState({ redirect: true });
     else this.setState({ errorMessages: { bath: true } });
   };
 
   uploadWidget = () => {
-    
-       window.cloudinary.openUploadWidget({ cloud_name: 'djbxlkyg0', upload_preset: 'xz37we5w', tags:['rental']},
-        (error, result) => {
-            if (error) console.error(error);
-            else {
-              let urlArr = [];
-              for (let pic of result) {
-                urlArr.push(pic.secure_url);
-              }
-              this.setState((state) => {
-                let newPicArr = state.pictures.concat(urlArr)
-                return {pictures: newPicArr}
-              }, () => console.log(this.state.pictures));
-            }
-        });
-     
- }
+    window.cloudinary.openUploadWidget(
+      { cloud_name: "djbxlkyg0", upload_preset: "xz37we5w", tags: ["rental"] },
+      (error, result) => {
+        if (error) console.error(error);
+        else {
+          let urlArr = [];
+          for (let pic of result) {
+            urlArr.push(pic.secure_url);
+          }
+          this.setState(
+            state => {
+              let newPicArr = state.pictures.concat(urlArr);
+              return { pictures: newPicArr };
+            },
+            () => console.log(this.state.pictures)
+          );
+        }
+      }
+    );
+  };
 
- onPhotoSelected(accFiles, rejFiles) {
-  const cloundinaryUrl = 'https://api.cloudinary.com/v1_1/djbxlkyg0/upload'
+  onPhotoSelected(accFiles, rejFiles) {
+    const cloundinaryUrl = "https://api.cloudinary.com/v1_1/djbxlkyg0/upload";
 
-  for (let file of accFiles) {
-
+    for (let file of accFiles) {
       const fileName = file.name;
-      Axios
-        .post(cloundinaryUrl, {file: file, upload_preset: 'xz37we5w', multiple: true})
+      Axios.post(cloundinaryUrl, {
+        file: file,
+        upload_preset: "xz37we5w",
+        multiple: true
+      })
         .then(res => console.log(res))
         .catch(err => console.error(err));
+    }
   }
-}
 
   render() {
     const {
@@ -231,19 +247,19 @@ export default class AddRental extends Component {
       imageURL,
       errorMessagePhone,
       email,
-      errorMessages, 
+      errorMessages,
       redirect
     } = this.state;
-    if (redirect) return (<Redirect push to='/' />);
+    if (redirect) return <Redirect push to="/" />;
     const isEmail = validator.isEmail(email);
     let isError = false;
-    for (let i in errorMessages) if (errorMessages[i] === true) isError = true; 
+    for (let i in errorMessages) if (errorMessages[i] === true) isError = true;
     return (
       <Container style={{ minHeight: "1000px" }}>
         <form>
           <Row>
             <Col lg="12" style={{ marginTop: 20 }}>
-              <h1 style={{ textAlign: "center" }}>Add Rental</h1>
+              <h1 style={{ textAlign: "center" }}>Add a Rental</h1>
             </Col>
           </Row>
           <Row>
@@ -369,6 +385,15 @@ export default class AddRental extends Component {
             </Col>
           </Row>
           <Row>
+            <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
+              <Select
+                options={yesOrNoValues}
+                placeholder="HUD Status"
+                onChange={this.handleHud}
+              />
+            </Col>
+          </Row>
+          <Row>
             <Col
               className="mt-4"
               lg={{ size: 1, offset: 3 }}
@@ -396,7 +421,7 @@ export default class AddRental extends Component {
           <Row>
             <Col className="mt-4" lg={{ size: 4, offset: 4 }}>
               <input
-                type='email'
+                type="email"
                 value={email}
                 name="email"
                 onChange={this.handleInputEmail}
@@ -424,112 +449,41 @@ export default class AddRental extends Component {
             </Col>
           </Row>
           <Row>
-            <Col className="mt-4 text-center" lg='12'>
-              <Button color="secondary" size='md' onClick={this.uploadWidget}>
+            <Col className="mt-4 text-center" lg="12">
+              <Button color="secondary" size="md" onClick={this.uploadWidget}>
                 <h4>Add Pictures</h4>
               </Button>
-              {/* <ImageUploader
-                	withIcon={true}
-                	buttonText='Choose images'
-                	onChange={this.addImage}
-                	imgExtension={['.jpg', '.gif', '.png', '.gif']}
-                	maxFileSize={5242880}
-            /> */}</Col></Row>
-            { this.state.pictures.length > 0 && ( <Row><Col className="mt-2 text-center" lg={{size:12}}>
+            </Col>
+          </Row>
+          {this.state.pictures.length > 0 && (
+            <Row>
+              <Col className="mt-2 text-center" lg={{ size: 12 }}>
+                <h4>Pictures uploaded</h4>
+              </Col>
+            </Row>
+          )}
 
-              <h4>Pictures uploaded</h4>
-              {/* <Button color="secondary" size='md' onClick={this.uploadWidget}>
-                <h4>Add Pictures</h4>
-              </Button> */}
-              {/* <Dropzone
-                    
-                    multiple={true}
-                    accept="image/*"
-                    
-                    onDrop={this.onPhotoSelected}
-                >
-                 <p>Try dropping some files here, or click to select files to upload.</p>
-                    {/* <div id="direct_upload">
-                        <h1>New Photo</h1>
-                        <h2>
-                            Direct upload from the browser with React File
-                            Upload
-                        </h2>
-                        <p>
-                            You can also drag and drop an image file into the
-                            dashed area.
-                        </p>
-                        <form>
-                            <div class="form_line">
-                                <label path="title">Title:</label>
-                                <div class="form_controls">
-                                    <input
-                                        type="text"
-                                        ref={titleEl =>
-                                            (this.titleEl = titleEl)
-                                        }
-                                        class="form-control"
-                                        placeholder="Title"
-                                    />
-                                </div>
-                            </div>
-                            <div class="form_line">
-                                <label>Image:</label>
-                                <div class="form_controls">
-                                    <div class="upload_button_holder">
-                                        <label
-                                            class="upload_button"
-                                            for="fileupload"
-                                        >
-                                            Upload
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="fileupload"
-                                            accept="image/*"
-                                            multiple="multiple"
-                                            ref={fileInputEl =>
-                                                (this.fileInputEl = fileInputEl)
-                                            }
-                                            onChange={() =>
-                                                this.onPhotoSelected(
-                                                    this.fileInputEl.files
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <h2>Status</h2>
-                    </div> */}
-                    {/* {this.props.uploadedPhotos.map(uploadedPhoto => {
-                        return (
-                            <UploadedPhotoStatusContainer
-                                key={uploadedPhoto.public_id}
-                                uploadedPhoto={uploadedPhoto}
-                            />
-                        );
-                    })} */}
-                {/* </Dropzone>  */}
-            {/* <Image cloudName="demo" publicId="sample" width="300" crop="scale"/>
-            <input className='mt-3' type='file' onChange={this.addImage} multiple /> */}
-            
-            </Col></Row>) }
-            
-          
           <Row>
             <Col className="mt-4 text-center" lg={{ size: 8, offset: 2 }}>
-              <Button color="primary" size='lg' block onClick={this.handleSubmit}>
+              <Button
+                color="primary"
+                size="lg"
+                block
+                onClick={this.handleSubmit}
+              >
                 Add Rental
               </Button>
             </Col>
           </Row>
-          {isError && <Row>
-            <Col className="mt-5 text-center" lg={{ size: 8, offset: 2 }}>
-              <h4 style={{ color: "red" }}>Please fill out required fields above</h4>
-            </Col>
-          </Row>}
+          {isError && (
+            <Row>
+              <Col className="mt-5 text-center" lg={{ size: 8, offset: 2 }}>
+                <h4 style={{ color: "red" }}>
+                  Please fill out required fields above
+                </h4>
+              </Col>
+            </Row>
+          )}
         </form>
       </Container>
     );

@@ -30,20 +30,19 @@ export default class NavComp extends Component {
         <Navbar color="light" light expand="lg">
         <Link to='/'>
           <NavbarBrand style={{ color: "blue" }}>
-            Lakewood Rentals
+            <h2>Lakewood Rentals</h2>
           </NavbarBrand></Link>
 
           <Nav className="ml-5 nav-fill w-100" navbar>
             <NavItem>
             <Link to='/' style={{ fontWeight: "bold", color: "blue" }}>
-              
-                Rentals
+                <h5>Rentals</h5>
             </Link>
             </NavItem>
             <NavItem className="ml-5">
             <Link to='/add-rental' style={{ fontWeight: "bold", color: "blue" }}>
              
-                Add a Listing
+                <h5>Add a Listing</h5>
               </Link>
             </NavItem>
           </Nav>
