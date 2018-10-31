@@ -79,7 +79,7 @@ export default class Rental extends Component {
       wePay,
       phone,
       comments,
-      imageURL,
+      pictures,
       price,
       email,
       hud
@@ -89,9 +89,8 @@ export default class Rental extends Component {
       return this.charAt(0).toUpperCase() + this.slice(1);
     };
     let images;
-    let defaultAptImg;
-    if (imageURL[0]) {
-      images = imageURL.map(img => {
+    if (pictures[0]) {
+      images = pictures.map(img => {
         let imgObj = {};
         imgObj.src = img;
         return imgObj;
@@ -165,7 +164,7 @@ export default class Rental extends Component {
                         </h4>
                       </Col>
                       {hud && (
-                        <Col>
+                        <Col className="mt-4 text-center">
                           <h5 style={{ color: "gray" }}>HUD Accepted</h5>
                         </Col>
                       )}
@@ -183,7 +182,7 @@ export default class Rental extends Component {
                         )}
                       </Col>
                       {hud && (
-                        <Col>
+                        <Col className="mt-4 text-center">
                           <h5 style={{ color: "gray" }}>HUD Accepted</h5>
                         </Col>
                       )}

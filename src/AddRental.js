@@ -30,8 +30,8 @@ const wePayValues = [
 
 const yesOrNoValues = [
   { value: true, label: "Yes" },
-  { value: false, label: "No" },
-]
+  { value: false, label: "No" }
+];
 
 export default class AddRental extends Component {
   state = {
@@ -42,7 +42,7 @@ export default class AddRental extends Component {
     location: "",
     bedrooms: "",
     baths: "",
-    wePay: '',
+    wePay: "",
     phone: "",
     comments: "",
     imageURL: "",
@@ -109,7 +109,7 @@ export default class AddRental extends Component {
   };
 
   handleWePay = select => {
-    const wePayStr = '';
+    let wePayStr = "";
     const conversionTable = {
       gas: "G",
       electricity: "E",
@@ -189,7 +189,7 @@ export default class AddRental extends Component {
       }
     }
 
-    const status = this.props.addRental(
+    Axios.post("http://localhost:3001", {
       type,
       location,
       bedrooms,
@@ -201,9 +201,16 @@ export default class AddRental extends Component {
       price,
       email,
       hud
-    );
-    if (status === "200") this.setState({ redirect: true });
-    else this.setState({ errorMessages: { bath: true } });
+    })
+      .then(response => {
+        console.log(response);
+        this.setState({ redirect: true });
+        
+      })
+      .catch(err => {
+        this.setState({ errorMessages: { bath: true } });
+        console.error(err);
+      });
   };
 
   uploadWidget = () => {
