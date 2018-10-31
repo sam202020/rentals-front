@@ -42,7 +42,7 @@ export default class AddRental extends Component {
     location: "",
     bedrooms: "",
     baths: "",
-    wePay: [],
+    wePay: '',
     phone: "",
     comments: "",
     imageURL: "",
@@ -109,8 +109,18 @@ export default class AddRental extends Component {
   };
 
   handleWePay = select => {
+    const wePayStr = '';
+    const conversionTable = {
+      gas: "G",
+      electricity: "E",
+      water: "W",
+      heat: "H"
+    };
     const selectedGroup = select.map(option => option.value);
-    this.setState({ wePay: selectedGroup });
+    for (let pay of selectedGroup) {
+      wePayStr += conversionTable[pay];
+    }
+    this.setState({ wePay: wePayStr });
   };
 
   handleComments = e => {

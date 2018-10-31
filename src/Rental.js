@@ -100,8 +100,6 @@ export default class Rental extends Component {
         return imgObj;
       });
     }
-    console.log(images);
-    console.log(imageURL);
     return (
       <div>
         <Row className="mt-5">
