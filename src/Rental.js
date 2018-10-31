@@ -11,9 +11,6 @@ import {
   UncontrolledCarousel
 } from "reactstrap";
 
-import house1 from "./images/default-house-1.jpg";
-import house2 from "./images/default-house-2.jpg";
-import house3 from "./images/default-house-3.jpg";
 import defaultApt from "./images/default-apt.jpg";
 
 export default class Rental extends Component {
@@ -69,7 +66,7 @@ export default class Rental extends Component {
     if (type === "A") returnStr = "apartment";
     if (type === "H") returnStr = "house";
     if (type === "T") returnStr = "townhouse";
-    if (type === 'R') returnStr = 'room';
+    if (type === "R") returnStr = "room";
     return returnStr.capitalize();
   };
 
@@ -163,8 +160,15 @@ export default class Rental extends Component {
                         )}
                       </Col>
                       <Col className="mt-4 text-center">
-                        <h4 style={{ color: "gray" }}>We Pay: {this.wePayFormat(wePay)}</h4>
+                        <h4 style={{ color: "gray" }}>
+                          We Pay: {this.wePayFormat(wePay)}
+                        </h4>
                       </Col>
+                      {hud && (
+                        <Col>
+                          <h5 style={{ color: "gray" }}>HUD Accepted</h5>
+                        </Col>
+                      )}
                     </Row>
                   ) : (
                     <Row>
@@ -178,6 +182,11 @@ export default class Rental extends Component {
                           <h4>Please Call for Price</h4>
                         )}
                       </Col>
+                      {hud && (
+                        <Col>
+                          <h5 style={{ color: "gray" }}>HUD Accepted</h5>
+                        </Col>
+                      )}
                     </Row>
                   )}
                   <Row>
