@@ -62,7 +62,8 @@ class App extends Component {
     comments,
     imageURL,
     price,
-    email, hud
+    email,
+    hud
   ) => {
     Axios.post("http://localhost:3001", {
       type,
@@ -74,7 +75,8 @@ class App extends Component {
       comments,
       imageURL,
       price,
-      email, hud
+      email,
+      hud
     })
       .then(response => {
         console.log(response);
