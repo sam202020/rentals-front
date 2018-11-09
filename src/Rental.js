@@ -1,7 +1,5 @@
 import React, { Component, PureComponent } from "react";
-import RentalsRender from "./RentalsRender";
-import { FixedSizeList as List } from "react-window";
-
+import Carousel from "./Carousel";
 import {
   Card,
   CardText,
@@ -10,11 +8,8 @@ import {
   CardSubtitle,
   Row,
   Col,
-  UncontrolledCarousel,
-  CarouselCaptionProps
+  UncontrolledCarousel
 } from "reactstrap";
-
-import defaultApt from "./images/default-apt.jpg";
 
 export default class Rental extends PureComponent {
   phoneFormat = number => {
@@ -75,6 +70,12 @@ export default class Rental extends PureComponent {
 
   capitalize = string => string.charAt(0) + string.slice(1);
 
+  toTitleCase = string => {
+    return string.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+
   render() {
     const {
       type,
@@ -103,9 +104,9 @@ export default class Rental extends PureComponent {
     }
 
     return (
-      <div>
-        <Row className="mt-5">
-          <Col lg="12">
+      
+        <Row className="mt-5 ml-3">
+          <Col>
             <Card
               style={{
                 border: "1px solid black",
@@ -115,21 +116,19 @@ export default class Rental extends PureComponent {
             >
               {images && (
                 <Col
-                  lg="3"
+                  lg="2"
                   style={{
+                    cursor:'zoom-in',
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
                     textAlign: "center"
                   }}
                 >
-                  <UncontrolledCarousel
-                    captionText={"Rental Picture"}
-                    items={images}
-                  />
+                  <img alt='rental property' src={pictures[0]} style={{maxWidth:'100%'}}/>
                 </Col>
               )}
-              {/* // ) : (
+              {/* {/* // ) : (
                 //   <>
                 //     <img src={defaultApt} style={{ maxWidth: "100%" }} />
                 //     <p style={{ fontSize: "10px" }}>Sample Image</p>
@@ -140,65 +139,48 @@ export default class Rental extends PureComponent {
                 <CardTitle>
                   <Row>
                     <Col className="mt-2 text-center">
-                      <h3>{this.typeFormat(type)}</h3>
+                      <h4>{this.typeFormat(type)}</h4>
                     </Col>
                     <Col className="mt-2 text-center">
-                      <h3>{location}</h3>{" "}
+                      <h4>{this.toTitleCase(location)}</h4>{" "}
+                    </Col>
+                    {hud && (
+                      <Col className="mt-2 text-center">
+                        <h4 style={{ color: "gray" }}>HUD Accepted</h4>
+                      </Col>
+                    )}
+                  </Row>
+                  <Row>
+                    <Col className="mt-3 text-center">
+                      <h5 style={{ color: "gray" }}>{bedrooms} Bedrooms</h5>
                     </Col>
                     <Col className="mt-3 text-center">
-                      <h4 style={{ color: "gray" }}>{baths} Bathroom</h4>
+                      <h5 style={{ color: "gray" }}>{baths} Bathrooms</h5>
                     </Col>
-                  </Row>
-                  <Row>
-                    <Col className="mt-4 text-center">
-                      <h4 style={{ color: "gray" }}>{bedrooms} Bedrooms</h4>
-                    </Col>
-                  </Row>
-                  {wePay[0] ? (
-                    <Row>
-                      <Col className="mt-4 text-center">
-                        {price ? (
-                          <h4>
-                            ${price}
-                            .00
-                          </h4>
-                        ) : (
-                          <h4>Please Call for Price</h4>
-                        )}
-                      </Col>
-                      <Col className="mt-4 text-center">
-                        <h4 style={{ color: "gray" }}>
+                    {wePay[0] && (
+                      <Col className="mt-3 text-center">
+                        <h5 style={{ color: "gray" }}>
                           We Pay: {this.wePayFormat(wePay)}
-                        </h4>
+                        </h5>
                       </Col>
-                      {hud && (
-                        <Col className="mt-4 text-center">
-                          <h5 style={{ color: "gray" }}>HUD Accepted</h5>
-                        </Col>
-                      )}
-                    </Row>
-                  ) : (
-                    <Row>
-                      <Col className="mt-4 text-center">
-                        {price ? (
-                          <h4>
-                            ${price}
-                            .00
-                          </h4>
-                        ) : (
-                          <h4>Please Call for Price</h4>
-                        )}
-                      </Col>
-                      {hud && (
-                        <Col className="mt-4 text-center">
-                          <h5 style={{ color: "gray" }}>HUD Accepted</h5>
-                        </Col>
-                      )}
-                    </Row>
-                  )}
+                    )}
+                  </Row>
                   <Row>
-                    <Col className="mt-4 text-center">
-                      <a href={"tel:" + phone}>Call {phone}</a>
+                    <Col className="mt-3 text-center">
+                      {price ? (
+                        <h5>
+                          ${price}
+                          .00
+                        </h5>
+                      ) : (
+                        <h5>Please Call for Price</h5>
+                      )}
+                    </Col>
+
+                    <Col className="mt-3 text-center">
+                      <a href={"tel:" + phone}>
+                        Call {this.phoneFormat(phone)}
+                      </a>
                     </Col>
                     <div className="mt-3">{email}</div>
                   </Row>
@@ -209,7 +191,7 @@ export default class Rental extends PureComponent {
             </Card>
           </Col>
         </Row>
-      </div>
+     
     );
   }
 }

@@ -41,7 +41,7 @@ class App extends Component {
     const { match, location, history } = this.props;
     const { rentals, rentalPortions, groupCounter } = this.props;
     return (
-      <div>
+      <div style={{cursor: 'context-menu'}}>
         <NavComp className='sticky-top'/>
         <Switch>
           <Route

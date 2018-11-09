@@ -310,7 +310,7 @@ class RentalsList extends PureComponent {
         </Row>
         <Row>
           <Col lg="3" className="mt-4 text-center ml-0">
-            <StickyBox>
+            <StickyBox offsetTop={100}>
               <h6>Search</h6>
 
               <input
@@ -406,7 +406,7 @@ class RentalsList extends PureComponent {
             <CheckBox name={"hud"} onChange={this.handleCheck} />
           </Col>
         </Row> */}
-          <Col className="text-center ml-5">
+          <Col className="text-center">
             <ClipLoader
               className={override}
               sizeUnit={"px"}

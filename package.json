@@ -27,6 +27,7 @@
     "react-router-last-location": "^1.1.0",
     "react-scripts": "2.0.5",
     "react-select": "^2.1.0",
+    "react-slick": "^0.23.2",
     "react-spinners": "^0.4.7",
     "react-sticky-box": "^0.7.5",
     "react-validation": "^3.0.7",
@@ -37,6 +38,7 @@
     "redux-devtools": "^3.4.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "slick-carousel": "^1.8.1",
     "validator": "^10.8.0"
   },
   "scripts": {
