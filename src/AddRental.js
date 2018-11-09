@@ -205,7 +205,6 @@ export default class AddRental extends Component {
       .then(response => {
         console.log(response);
         this.setState({ redirect: true });
-        
       })
       .catch(err => {
         this.setState({ errorMessages: { bath: true } });

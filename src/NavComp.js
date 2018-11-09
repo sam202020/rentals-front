@@ -23,26 +23,40 @@ import { locationChange } from './actions'
 import { Link } from 'react-router-dom';
 
 export default class NavComp extends Component {
+  state = { width: window.innerWidth }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions = () => {
+    this.setState({ width: window.innerWidth });
+  }
   
   render() {
+    console.log(this.state.width)
     return (
-      <div className="container-fluid">
-        <Navbar color="light" light expand="lg">
-        <Link to='/'>
-          <NavbarBrand style={{ color: "blue" }}>
+      <div className={this.state.width > 900 ? "sticky-top" : undefined}>
+        <Navbar color="light" light expand="sm" style={{ color: "blue", padding: 0, height:50 }}>
+        
+          <NavbarBrand className='ml-5' style={{ color: "blue" }}>
             <h2>Lakewood Rentals</h2>
-          </NavbarBrand></Link>
+          </NavbarBrand>
 
-          <Nav className="ml-5 nav-fill w-100" navbar>
+          <Nav className="ml-5 nav-fill w-100" navbar style={{ color: "blue" }}>
             <NavItem>
-            <Link to='/' style={{ fontWeight: "bold", color: "blue" }}>
+            <Link to='/' style={{ fontWeight: "bold", color: "blue", paddingLeft:300 }}>
                 <h5>Rentals</h5>
             </Link>
             </NavItem>
             <NavItem className="ml-5">
-            <Link to='/add-rental' style={{ fontWeight: "bold", color: "blue" }}>
+            <Link to='/add-rental' style={{ fontWeight: "bold", color: "blue", margin: 1}}>
              
-                <h5>Add a Listing</h5>
+                <h5>List a Property</h5>
               </Link>
             </NavItem>
           </Nav>

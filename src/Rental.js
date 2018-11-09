@@ -1,4 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
+import RentalsRender from "./RentalsRender";
+import { FixedSizeList as List } from "react-window";
 
 import {
   Card,
@@ -8,12 +10,13 @@ import {
   CardSubtitle,
   Row,
   Col,
-  UncontrolledCarousel
+  UncontrolledCarousel,
+  CarouselCaptionProps
 } from "reactstrap";
 
 import defaultApt from "./images/default-apt.jpg";
 
-export default class Rental extends Component {
+export default class Rental extends PureComponent {
   phoneFormat = number => {
     const numStr = number.toString();
     return (
@@ -70,6 +73,8 @@ export default class Rental extends Component {
     return returnStr.capitalize();
   };
 
+  capitalize = string => string.charAt(0) + string.slice(1);
+
   render() {
     const {
       type,
@@ -96,6 +101,7 @@ export default class Rental extends Component {
         return imgObj;
       });
     }
+
     return (
       <div>
         <Row className="mt-5">
@@ -107,35 +113,37 @@ export default class Rental extends Component {
                 flexDirection: "row"
               }}
             >
-              <Col
-                lg="3"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  textAlign: "center"
-                }}
-              >
-                {images ? (
+              {images && (
+                <Col
+                  lg="3"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    textAlign: "center"
+                  }}
+                >
                   <UncontrolledCarousel
-                    captionText="Rental Picture"
+                    captionText={"Rental Picture"}
                     items={images}
                   />
-                ) : (
-                  <>
-                    <img src={defaultApt} style={{ maxWidth: "100%" }} />
-                    <p style={{ fontSize: "10px" }}>Sample Image</p>
-                  </>
-                )}
-              </Col>
+                </Col>
+              )}
+              {/* // ) : (
+                //   <>
+                //     <img src={defaultApt} style={{ maxWidth: "100%" }} />
+                //     <p style={{ fontSize: "10px" }}>Sample Image</p>
+                //   </>
+                // )} */}
+
               <CardBody>
                 <CardTitle>
                   <Row>
                     <Col className="mt-2 text-center">
-                      <h2>{this.typeFormat(type)}</h2>
+                      <h3>{this.typeFormat(type)}</h3>
                     </Col>
-                    <Col className="mt-3 text-center">
-                      <h4 style={{ color: "gray" }}>{bedrooms} Bedrooms</h4>
+                    <Col className="mt-2 text-center">
+                      <h3>{location}</h3>{" "}
                     </Col>
                     <Col className="mt-3 text-center">
                       <h4 style={{ color: "gray" }}>{baths} Bathroom</h4>
@@ -143,7 +151,7 @@ export default class Rental extends Component {
                   </Row>
                   <Row>
                     <Col className="mt-4 text-center">
-                      <h3>{location}</h3>{" "}
+                      <h4 style={{ color: "gray" }}>{bedrooms} Bedrooms</h4>
                     </Col>
                   </Row>
                   {wePay[0] ? (
