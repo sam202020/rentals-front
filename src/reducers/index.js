@@ -5,7 +5,8 @@ import {
   ADDING_RENTALS,
   ADDED_RENTALS,
   GET_RENTAL_GROUP,
-  SAVE_UI_STATE
+  SAVE_UI_STATE,
+  GET_CURRENT_USER
 } from '../actions';
 
 const initialState = {
@@ -22,11 +23,16 @@ const initialState = {
   addingRental: false,
   addedRental: false,
   groupCounter: 0,
-  UIState: null
+  UIState: null,
+  user: null
 };
 
 const rentalsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case GET_CURRENT_USER:
+      return Object.assign({}, state, {
+        user: action.payload
+      });
     case SAVE_UI_STATE:
       let UIState = Object.assign({}, state.UIState, { [action.id]: action.payload });
       return Object.assign({}, state, {

@@ -6,7 +6,19 @@ export const ADDING_RENTALS = 'ADDING_RENTALS';
 export const ADDED_RENTALS = 'ADDED_RENTALS';
 export const GET_RENTAL_GROUP = 'GET_RENTAL_GROUP';
 export const ERROR = 'ERROR';
-export const SAVE_UI_STATE = 'SAVE_UI_STATE'
+export const SAVE_UI_STATE = 'SAVE_UI_STATE';
+export const GET_CURRENT_USER = 'GET_CURRENT_USER';
+
+export const saveCurrentUser = (user) => {
+  console.log(user);
+  return dispatch => {
+    dispatch({
+      type: GET_CURRENT_USER,
+      payload: user,
+    })
+  }
+};
+
 
 export const saveUIState = (UIState, id) => {
   return dispatch => {
@@ -16,7 +28,7 @@ export const saveUIState = (UIState, id) => {
       id
     })
   }
-}
+};
 
 export const fetchRentals = () => {
   const getRentals = axios.get('https://rentals-back.azurewebsites.net/rentals');

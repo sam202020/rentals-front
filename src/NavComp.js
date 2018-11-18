@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import {
-  Navbar,
-  Nav,
-  NavItem} from "reactstrap";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome } from '@fortawesome/free-solid-svg-icons'
+import { Navbar, Nav, NavItem, Button } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 export default class NavComp extends Component {
@@ -24,7 +21,10 @@ export default class NavComp extends Component {
 
   render() {
     return (
-      <div className={this.state.width > 900 ? "sticky-top" : undefined} style={{borderBottom: '.5px solid gray'}}>
+      <div
+        className={this.state.width > 900 ? "sticky-top" : undefined}
+        style={{ borderBottom: ".5px solid gray" }}
+      >
         <Navbar
           color="light"
           light
@@ -32,11 +32,17 @@ export default class NavComp extends Component {
           style={{ color: "blue", padding: 0, height: 50 }}
         >
           <span className="navbar-brand ml-5">
-          
-            <Link to="/" style={{ fontWeight: "bold", color: "blue",display:'flex', flexDirection:'row' }}>
-            <FontAwesomeIcon icon={faHome} className='mt-2 mr-2'/>
+            <Link
+              to="/"
+              style={{
+                fontWeight: "bold",
+                color: "blue",
+                display: "flex",
+                flexDirection: "row"
+              }}
+            >
+              <FontAwesomeIcon icon={faHome} className="mt-2 mr-2" />
               <h2>Lakewood Rentals</h2>{" "}
-              
             </Link>
           </span>
 
@@ -57,12 +63,24 @@ export default class NavComp extends Component {
                 <h5>List a Property</h5>
               </Link>
             </NavItem>
+            {this.props.user && (
+              <NavItem className="ml-5">
+                <Link
+                  to="/user"
+                  style={{ fontWeight: "bold", color: "blue", margin: 1 }}
+                >
+                  <h5>My Account</h5>
+                </Link>
+              </NavItem>
+            )}
             <NavItem className="ml-5">
               <Link
-                to="/user"
-                style={{ fontWeight: "bold", color: "blue", margin: 1 }}
+                to="/signin"
+                style={{ fontWeight: "bold", color: "white", margin: 1 }}
               >
-                <h5>My Account</h5>
+                <Button color="primary" className="mt-3">
+                  Sign In
+                </Button>
               </Link>
             </NavItem>
           </Nav>
