@@ -9,7 +9,7 @@ import ScrollControl from "./ScrollControl";
 import RentalsList from "./RentalsList";
 import AddRental from "./AddRental";
 import Payment from "./Payment";
-import Register from "./UserComponents/Register";
+import UserDashboard from "./UserComponents/UserDashboard";
 import firebase from "firebase";
 import FirebaseLogin from "./UserComponents/FirebaseLogin";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -87,7 +87,7 @@ class App extends Component {
           />
           <Route
             path="/user"
-            render={routerProps => <Register {...routerProps} />}
+            render={routerProps => <UserDashboard {...routerProps} />}
           />
           <Route
             path="/signin"

@@ -1,14 +1,11 @@
-import createHistory from "history/createBrowserHistory"
-import { locationChange } from './actions'
-import { connect } from 'react-redux';
-
+import createHistory from "history/createBrowserHistory";
 const history = createHistory()
 
-const location = history.location
+// const location = history.location
 
-const unlisten = history.listen((location, action) => {
-    console.log(location.pathname)
-})
+// const unlisten = history.listen((location, action) => {
+//     console.log(location.pathname)
+// })
 
 // function getLocation(state) {
 //     return state;

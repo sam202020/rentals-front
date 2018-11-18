@@ -4,7 +4,7 @@ import UserSidebar from  './UserSidebar.js'
 export default () => {
   return (
     <div>
-      
+      <UserSidebar />
     </div>
   )
 }

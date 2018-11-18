@@ -130,7 +130,7 @@ class RentalsList extends PureComponent {
   });
 
   handleFilter = select => {
-    let filterObj = new Object();
+    let filterObj = {};
     const selectedGroup = select.map(option => option.value);
     for (let option of selectedGroup) {
       filterObj[option] = true;

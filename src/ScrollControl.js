@@ -1,6 +1,4 @@
-import React, { Component, PureComponent } from "react";
-import RentalsList from "./RentalsList";
-import Rental from "./Rental";
+import React, { PureComponent } from "react";
 
 export default class ScrollControl extends PureComponent {
   state = {
