@@ -1,25 +1,10 @@
-import React, { Component, Fragment } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { Component } from "react";
 import {
-  Collapse,
   Navbar,
-  NavbarToggler,
-  NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Container
-} from "reactstrap";
-
-import RentalsList from "./RentalsList";
-import { connect } from "react-redux";
-import { locationChange } from "./actions";
-
+  NavItem} from "reactstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHome } from '@fortawesome/free-solid-svg-icons'
 import { Link } from "react-router-dom";
 
 export default class NavComp extends Component {
@@ -38,9 +23,8 @@ export default class NavComp extends Component {
   };
 
   render() {
-    console.log(this.state.width);
     return (
-      <div className={this.state.width > 900 ? "sticky-top" : undefined}>
+      <div className={this.state.width > 900 ? "sticky-top" : undefined} style={{borderBottom: '.5px solid gray'}}>
         <Navbar
           color="light"
           light
@@ -48,8 +32,11 @@ export default class NavComp extends Component {
           style={{ color: "blue", padding: 0, height: 50 }}
         >
           <span className="navbar-brand ml-5">
-            <Link to="/" style={{ fontWeight: "bold", color: "blue" }}>
+          
+            <Link to="/" style={{ fontWeight: "bold", color: "blue",display:'flex', flexDirection:'row' }}>
+            <FontAwesomeIcon icon={faHome} className='mt-2 mr-2'/>
               <h2>Lakewood Rentals</h2>{" "}
+              
             </Link>
           </span>
 
@@ -57,9 +44,9 @@ export default class NavComp extends Component {
             <NavItem>
               <Link
                 to="/"
-                style={{ fontWeight: "bold", color: "blue", paddingLeft: 320 }}
+                style={{ fontWeight: "bold", color: "blue", paddingLeft: 250 }}
               >
-                <h5>Rentals</h5>
+                <h5>Find a Rental</h5>
               </Link>
             </NavItem>
             <NavItem className="ml-5">
@@ -68,6 +55,14 @@ export default class NavComp extends Component {
                 style={{ fontWeight: "bold", color: "blue", margin: 1 }}
               >
                 <h5>List a Property</h5>
+              </Link>
+            </NavItem>
+            <NavItem className="ml-5">
+              <Link
+                to="/user"
+                style={{ fontWeight: "bold", color: "blue", margin: 1 }}
+              >
+                <h5>My Account</h5>
               </Link>
             </NavItem>
           </Nav>

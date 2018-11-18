@@ -1,48 +1,48 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import PropTypes from "prop-types";
-import "./App.css";
-import NavComp from "./NavComp";
-import { Switch, Route, Redirect } from "react-router-dom";
-import Axios from "axios";
+import { Switch, Route } from "react-router-dom";
+import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { fetchRentals } from "./actions";
+import Auth from "./Auth/Auth";
 
+import NavComp from "./NavComp";
 import ScrollControl from "./ScrollControl";
 import RentalsList from "./RentalsList";
 import AddRental from "./AddRental";
-import { withRouter } from "react-router";
+import Payment from "./Payment";
+import Register from "./UserComponents/Register";
+import Callback from './Auth/Callback'
+
+import CssBaseline from "@material-ui/core/CssBaseline";
+
+const mapStateToProps = state => {
+  const { rentals, rentalPortions, groupCounter } = state;
+  return {
+    rentals,
+    rentalPortions,
+    groupCounter
+  };
+};
+
+const auth = new Auth();
+
+const handleAuthentication = (nextState, replace) => {
+  if (/access_token|id_token|error/.test(nextState.location.hash)) {
+    auth.handleAuthentication();
+  }
+};
 
 class App extends Component {
-  state = {
-    rentals: []
-  };
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
-
   componentDidMount() {
     this.props.fetchRentals();
   }
 
-  handleFetchRentals = () => {
-    Axios.get("http://localhost:3001/rentals")
-      .then(response => {
-        this.setState({ rentals: response.data, loading: false });
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  };
-
   render() {
-    const { match, location, history } = this.props;
     const { rentals, rentalPortions, groupCounter } = this.props;
     return (
-      <div style={{cursor: 'context-menu'}}>
-        <NavComp className='sticky-top'/>
+      <div style={{ cursor: "context-menu" }}>
+        <CssBaseline />
+        <NavComp className="sticky-top" auth={auth} />
         <Switch>
           <Route
             exact
@@ -50,6 +50,7 @@ class App extends Component {
             render={routerProps => (
               <ScrollControl
                 {...routerProps}
+                auth={auth}
                 rentals={rentals}
                 rentalPortions={rentalPortions}
                 groupCounter={groupCounter}
@@ -59,25 +60,28 @@ class App extends Component {
           />
           <Route
             path="/add-rental"
-            render={routerProps => <AddRental {...routerProps} />}
+            render={routerProps => <AddRental auth={auth} {...routerProps} />}
+          />
+          <Route
+            path="/sign-up"
+            render={routerProps => <Payment auth={auth} {...routerProps} />}
+          />
+          <Route
+            path="/user"
+            render={routerProps => <Register auth={auth} {...routerProps} />}
+          />
+          <Route
+            path="/callback"
+            render={props => {
+              handleAuthentication(props);
+              return <Callback {...props} />;
+            }}
           />
         </Switch>
       </div>
     );
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    rentals: state.rentals,
-    rentalPortions: state.rentalPortions,
-    fetchingRentals: state.fetchingRentals,
-    fetchedRentals: state.fetchedRentals,
-    addingRental: state.addingRental,
-    addedRental: state.addedRental,
-    groupCounter: state.groupCounter
-  };
-};
 
 export default withRouter(
   connect(

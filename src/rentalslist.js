@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import { Container, Row, Col } from "reactstrap";
 import Rental from "./Rental";
 import Axios from "axios";
@@ -7,13 +7,11 @@ import { ClipLoader } from "react-spinners";
 import { css } from "react-emotion";
 import options from "./selectOptions";
 import memoize from "memoize-one";
-import { List, WindowScroller } from "react-virtualized";
-import "react-virtualized/styles.css"; // only needs to be imported once
-import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
 import { connect } from "react-redux";
 import SliderFilter from "./SliderFilter";
 import CheckBox from "./CheckBox";
 import StickyBox from "react-sticky-box";
+import { customStyles } from "./customStyles";
 
 const mapStateToProps = state => {
   const { minPrice, maxPrice, minBeds, maxBeds, minBaths, maxBaths } = state;
@@ -35,19 +33,6 @@ const override = css`
   border-color: red;
 `;
 
-const customStyles = {
-  control: base => ({
-    ...base,
-    '&:hover': {
-      cursor: 'pointer', 
-      border: '1px solid blue'
-    }
-  })
-}
-
-const rowHeight = 50;
-const rowWidth = 1000;
-
 class RentalsList extends PureComponent {
   state = {
     hud: false,
@@ -63,18 +48,6 @@ class RentalsList extends PureComponent {
   componentDidMount() {
     this.setState({ loading: false });
   }
-
-  // componentWillMount() {
-  //   window.addEventListener("scroll", this.props.onScroll);
-  // }
-
-  // componentWillUnmount() {
-  //   window.removeEventListener("scroll", this.props.onScroll);
-  // }
-
-  // componentWillMount() {
-  //   this.setState({ loading: true });
-  // }
 
   calcDistance = (latB, latA, lngB, lngA) => {
     const distance = Math.hypot(latB - latA, lngB - lngA);
@@ -117,8 +90,7 @@ class RentalsList extends PureComponent {
     );
     const options = {
       bounds: defaultBounds,
-      strictBounds: true,
-      types: ["geocode"]
+      strictBounds: true
     };
     const autoComplete = new window.google.maps.places.Autocomplete(
       this.state.searchRef.current,
@@ -167,10 +139,6 @@ class RentalsList extends PureComponent {
     this.setState({ filterObj: filterObj });
   };
 
-  rentalsDisplay = array => {};
-
-  handleLoad = () => {};
-
   handleDisplay = () => {
     if (this.props.reduxRentals[this.state.num]) {
       return this.props.reduxRentals.slice(0, this.state.num);
@@ -183,7 +151,6 @@ class RentalsList extends PureComponent {
       this.searchRentals(searchObj, this.props.reduxRentals),
       filterObj
     );
-    console.log(rentals[index]);
     if (typeof rentals[index] === "undefined" || rentals[index] === undefined)
       return;
     return <Rental key={key} rental={rentals[index]} />;
@@ -265,7 +232,6 @@ class RentalsList extends PureComponent {
     } = this.state;
     let {
       numRentals,
-      groupCounter,
       minPrice,
       maxPrice,
       minBeds,
@@ -290,8 +256,7 @@ class RentalsList extends PureComponent {
     let loading = false;
     if (this.state.loading || (rentals && !rentals[0] && rentals !== null))
       loading = true;
-    // let numRentals = 0;
-    // if (rentals) for (let i of rentals) numRentals += 1;
+
     let rentalsDisplay;
     if (rentals) {
       rentalsDisplay = rentals.map(rental => {
@@ -301,31 +266,28 @@ class RentalsList extends PureComponent {
     if (rentalsDisplay) numRentals = rentalsDisplay.length;
     return (
       <Container>
+        <h5
+          className="text-center mt-3"
+          style={{ fontFamily: "Roboto, sans-serif" }}
+        >
+          Find an Apartment, House, Townhouse, or Room for rent in Lakewood, NJ{" "}
+        </h5>
         <Row>
-          <Col className="mt-2 text-center">
-            {!loading && numRentals > 0 && numRentals && (
-              <h6>{numRentals} Rentals</h6>
-            )}
-          </Col>
-        </Row>
-        <Row>
-          <Col lg="3" className="mt-4 text-center ml-0">
+          <Col lg="3" className="mt-4 pt-3 pr-3 pl-3 text-center ml-0"  style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)', border:'0.5px solid gray'}}>
             <StickyBox offsetTop={100}>
               <h6>Search</h6>
 
               <input
                 className="mt-2 css-1pnvzwf"
                 type="text"
-                style={{ width: "100%", cursor: "pointer" }}
-                placeholder=" Enter Location"
+                style={{ width: "100%", cursor: "pointer", paddingLeft: 10 }}
+                placeholder="Enter Address or Place"
                 onChange={this.handleAutoComplete}
                 ref={this.state.searchRef}
               />
               <h6 className="mt-4">Apartment, House, Townhouse, or Room? </h6>
               <Select
                 placeholder="Select"
-                blurInputOnSelect={false}
-                closeMenuOnSelect={false}
                 isMulti
                 onChange={this.handleFilter.bind(this)}
                 options={options}
@@ -361,51 +323,7 @@ class RentalsList extends PureComponent {
               </div>
             </StickyBox>
           </Col>
-          {/* <Col lg="4" className="mt-4 text-center">
-            <h5>Type</h5>
-            <Select
-              placeholder="Apartment, House, Townhouse, or Room"
-              blurInputOnSelect={false}
-              closeMenuOnSelect={false}
-              isMulti
-              onChange={this.handleFilter.bind(this)}
-              options={options}
-            />
-          </Col>
-          <Col lg="4" className="mt-4 text-center">
-            <h5>Price</h5>
-            <SliderFilter
-              name={"minMaxPrice"}
-              min={minPrice}
-              max={maxPrice}
-              handleChange={this.handleChange}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col lg="4" className="mt-4 text-center">
-            <h5>Bedrooms</h5>
-            <SliderFilter
-              name={"minMaxBeds"}
-              min={minBeds}
-              max={maxBeds}
-              handleChange={this.handleChange}
-            />
-          </Col>
-          <Col lg="4" className="mt-4 text-center">
-            <h5>Bathrooms</h5>
-            <SliderFilter
-              name={"minMaxBaths"}
-              min={minBaths}
-              max={maxBaths}
-              handleChange={this.handleChange}
-            />
-          </Col>
-          <Col lg="4" className="mt-4 text-center">
-            <h5>HUD Qualified</h5>
-            <CheckBox name={"hud"} onChange={this.handleCheck} />
-          </Col>
-        </Row> */}
+
           <Col className="text-center">
             <ClipLoader
               className={override}
@@ -422,56 +340,16 @@ class RentalsList extends PureComponent {
                 </Col>{" "}
               </Row>
             ) : (
-              rentalsDisplay
+              <>
+                <Col className="mt-4 text-center">
+                  {!loading && numRentals > 0 && numRentals && (
+                    <h6>{numRentals} Rentals</h6>
+                  )}
+                </Col>
+                {rentalsDisplay}
+              </>
             )}
           </Col>
-          {/* <Row>
-          <Col lg="9" className="text-center">
-            <ClipLoader
-              className={override}
-              sizeUnit={"px"}
-              size={150}
-              color={"#123abc"}
-              loading={loading}
-            />
-          </Col> */}
-          {/* </Row>
-        {rentals === null ? (
-          <Row>
-            <Col className="mt-5 text-center">
-              <h4>No Rentals with Selected Options</h4>
-            </Col>{" "}
-          </Row>
-        ) : (
-          // <WindowScroller>
-          //   {({ height, isScrolling, onChildScroll, scrollTop }) => (
-          //     <List
-          //       autoHeight
-          //       height={height}
-          //       isScrolling={isScrolling}
-          //       onScroll={onChildScroll}
-          //       rowCount={numRentals}
-          //       rowHeight={50}
-          //       rowRenderer={this.renderRow}
-          //       scrollTop={scrollTop}
-          //       width={rowWidth}
-          //     />
-          //   )}
-          // </WindowScroller>
-          //           <AutoSizer>
-          //   {({ height, width }) => (
-          //           <List
-          //             filterObj={this.state.filterObj}
-          //             width={width}
-          //             height={height}
-          //             rowHeight={50}
-          //             rowRenderer={this.renderRow}
-          //             rowCount={numRentals}
-          //           />
-          //           )}
-          // </AutoSizer>
-          rentalsDisplay
-        )} */}
         </Row>
       </Container>
     );

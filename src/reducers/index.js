@@ -4,7 +4,8 @@ import {
   FETCHED_RENTALS,
   ADDING_RENTALS,
   ADDED_RENTALS,
-  GET_RENTAL_GROUP
+  GET_RENTAL_GROUP,
+  SAVE_UI_STATE
 } from '../actions';
 
 const initialState = {
@@ -20,11 +21,17 @@ const initialState = {
   fetchedRentals: false,
   addingRental: false,
   addedRental: false,
-  groupCounter: 0
+  groupCounter: 0,
+  UIState: null
 };
 
 const rentalsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SAVE_UI_STATE:
+      let UIState = Object.assign({}, state.UIState, { [action.id]: action.payload });
+      return Object.assign({}, state, {
+        UIState
+      });
     case FETCHING_RENTALS:
       return Object.assign({}, state, {
         fetchingRentals: true
@@ -48,7 +55,7 @@ const rentalsReducer = (state = initialState, action) => {
         maxPrice: max,
         minBeds,
         maxBeds,
-        minBaths, 
+        minBaths,
         maxBaths,
         rentalPortions
       });
@@ -91,7 +98,7 @@ const minAndMaxValues = rentals => {
   let max;
   let minBeds;
   let maxBeds;
-  let minBaths 
+  let minBaths
   let maxBaths;
   for (let i of rentals) {
     if (i.price) {
@@ -126,7 +133,7 @@ const minAndMaxValues = rentals => {
     min: min,
     max: max,
     minBeds,
-    maxBeds, 
+    maxBeds,
     minBaths,
     maxBaths
   };
