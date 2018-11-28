@@ -46,8 +46,55 @@ class RentalsList extends PureComponent {
   };
 
   componentDidMount() {
-    this.setState({ loading: false });
+    const { REACT_APP_GOOGLE_MAPS_API_KEY } = process.env;
+    this.addScript = document.createElement("script");
+    window.initAutoComplete = this.initAutoComplete;
+    this.addScript.setAttribute(
+      "src",
+      `https://maps.googleapis.com/maps/api/js?key=${REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initAutoComplete`
+    );
+    document.body.appendChild(this.addScript);
   }
+
+  componentWillUnmount() {
+    delete window.google;
+    document.body.removeChild(this.addScript);
+  }
+
+  initAutoComplete = () => {
+    const defaultBounds = new window.google.maps.LatLngBounds(
+      new window.google.maps.LatLng(40.014815, -74.311982),
+      new window.google.maps.LatLng(40.131737, -74.118621)
+    );
+    const options = {
+      bounds: defaultBounds,
+      strictBounds: true
+    };
+    const autoComplete = new window.google.maps.places.Autocomplete(
+      this.state.searchRef.current,
+      options
+    );
+    autoComplete.setFields(["geometry"]);
+    autoComplete.addListener("place_changed", () => {
+      this.setState({ loading: true }, () => {
+        Axios.post("http://localhost:3001/geometry", {
+          location: this.state.searchRef.current.value
+        })
+          .then(response => {
+            const { lat, lng } = response.data;
+            if (!response.data || !lat || !lng) {
+              this.setState({ searchObj: null, loading: false });
+            } else {
+              this.setState({ searchObj: { lat, lng }, loading: false });
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      });
+    });
+    this.setState({ loading: false });
+  };
 
   calcDistance = (latB, latA, lngB, lngA) => {
     const distance = Math.hypot(latB - latA, lngB - lngA);
@@ -76,45 +123,6 @@ class RentalsList extends PureComponent {
     }
     const sortedRentals = this.sortNumbers(rentals);
     return sortedRentals;
-  };
-
-  handleAutoComplete = e => {
-    e.persist();
-    if (e.target.value.length === 0) {
-      this.setState({ searchObj: null });
-      return;
-    }
-    const defaultBounds = new window.google.maps.LatLngBounds(
-      new window.google.maps.LatLng(40.014815, -74.311982),
-      new window.google.maps.LatLng(40.131737, -74.118621)
-    );
-    const options = {
-      bounds: defaultBounds,
-      strictBounds: true
-    };
-    const autoComplete = new window.google.maps.places.Autocomplete(
-      this.state.searchRef.current,
-      options
-    );
-    autoComplete.setFields(["geometry"]);
-    autoComplete.addListener("place_changed", () => {
-      this.setState({ loading: true }, () => {
-        Axios.post("http://localhost:3001/geometry", {
-          location: e.target.value
-        })
-          .then(response => {
-            const { lat, lng } = response.data;
-            if (!response.data || !lat || !lng) {
-              this.setState({ searchObj: null, loading: false });
-            } else {
-              this.setState({ searchObj: { lat, lng }, loading: false });
-            }
-          })
-          .catch(err => {
-            console.error(err);
-          });
-      });
-    });
   };
 
   filterType = memoize((list, filterBy) => {
@@ -260,7 +268,13 @@ class RentalsList extends PureComponent {
     let rentalsDisplay;
     if (rentals) {
       rentalsDisplay = rentals.map(rental => {
-        return <Rental key={rental._id} {...rental} />;
+        return (
+          <Row key={rental._id}>
+            <Col className="mt-3 ml-3">
+              <Rental {...rental} />{" "}
+            </Col>
+          </Row>
+        );
       });
     }
     if (rentalsDisplay) numRentals = rentalsDisplay.length;
@@ -273,19 +287,30 @@ class RentalsList extends PureComponent {
           Find an Apartment, House, Townhouse, or Room for rent in Lakewood, NJ{" "}
         </h5>
         <Row>
-          <Col lg="3" className="mt-4 pt-3 pr-3 pl-3 text-center ml-0"  style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)', border:'0.5px solid gray'}}>
+          <Col
+            lg="3"
+            className="mt-4 pt-3 pr-3 pl-3 text-center ml-0"
+            style={{
+              border: "0.5px solid gray"
+            }}
+          >
             <StickyBox offsetTop={100}>
-              <h6>Search</h6>
+              <h4 style={{ color: "blue" }}>Search</h4>
 
               <input
                 className="mt-2 css-1pnvzwf"
                 type="text"
                 style={{ width: "100%", cursor: "pointer", paddingLeft: 10 }}
-                placeholder="Enter Address or Place"
-                onChange={this.handleAutoComplete}
+                placeholder="Enter Location"
                 ref={this.state.searchRef}
               />
-              <h6 className="mt-4">Apartment, House, Townhouse, or Room? </h6>
+              <div
+                className="mt-3"
+                style={{ borderBottom: "1px solid gray" }}
+              />
+              <h5 style={{ color: "blue" }} className="mt-4">
+                Looking for an Apartment, House, Townhouse, or Room?{" "}
+              </h5>
               <Select
                 placeholder="Select"
                 isMulti
@@ -293,34 +318,34 @@ class RentalsList extends PureComponent {
                 options={options}
                 styles={customStyles}
               />
-              <h6 className="mt-4">Price</h6>
+              {minPrice && <h6 className="mt-4">Price</h6>}
               <SliderFilter
                 name={"minMaxPrice"}
                 min={minPrice}
                 max={maxPrice}
                 handleChange={this.handleChange}
               />
-              <h6 className="mt-4">Bedrooms</h6>
+              <h6 className="mt-4"># Bedrooms</h6>
               <SliderFilter
                 name={"minMaxBeds"}
                 min={minBeds}
                 max={maxBeds}
                 handleChange={this.handleChange}
               />
-              <h6 className="mt-4">Bathrooms</h6>
+              <h6 className="mt-4"># Bathrooms</h6>
               <SliderFilter
                 name={"minMaxBaths"}
                 min={minBaths}
                 max={maxBaths}
                 handleChange={this.handleChange}
               />
-              <div
+              {/* <div
                 className="mt-4"
                 style={{ display: "flex", flexDirection: "row" }}
               >
                 <CheckBox name={"hud"} onChange={this.handleCheck} />{" "}
                 <h6 style={{ marginTop: 3 }}>Eligible for HUD</h6>
-              </div>
+              </div> */}
             </StickyBox>
           </Col>
 
@@ -343,7 +368,15 @@ class RentalsList extends PureComponent {
               <>
                 <Col className="mt-4 text-center">
                   {!loading && numRentals > 0 && numRentals && (
-                    <h6>{numRentals} Rentals</h6>
+                    <>
+                      {numRentals === this.props.reduxRentals.length ? (
+                        <h6>{numRentals} Rentals Available</h6>
+                      ) : (
+                        <h6>
+                          {numRentals} Rentals Available With Selected Options
+                        </h6>
+                      )}
+                    </>
                   )}
                 </Col>
                 {rentalsDisplay}

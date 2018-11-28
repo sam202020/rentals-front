@@ -10,7 +10,6 @@ export const SAVE_UI_STATE = 'SAVE_UI_STATE';
 export const GET_CURRENT_USER = 'GET_CURRENT_USER';
 
 export const saveCurrentUser = (user) => {
-  console.log(user);
   return dispatch => {
     dispatch({
       type: GET_CURRENT_USER,
@@ -31,7 +30,7 @@ export const saveUIState = (UIState, id) => {
 };
 
 export const fetchRentals = () => {
-  const getRentals = axios.get('https://rentals-back.azurewebsites.net/rentals');
+  const getRentals = axios.get('https://rentals-api.azurewebsites.net/rentals');
   return dispatch => {
     dispatch({
       type: FETCHING_RENTALS
@@ -53,24 +52,3 @@ export const fetchRentals = () => {
       });
   };
 };
-
-// export const addSmurf = smurf => {
-//   const postSmurf = axios.post('http://localhost:3333/smurfs', { 
-//     name: smurf.name,
-//     age: smurf.age,
-//     height: smurf.height
-//   });
-//   return dispatch => {
-//     dispatch({ type: ADDING_SMURF }); 
-//     postSmurf
-//       .then(resolve => {
-//           dispatch({ type: ADDED_SMURF, payload: resolve.data });
-//       })
-//       .catch(err => {
-//         dispatch({
-//             type: ERROR,
-//             payload: 'Error Adding Smurfs'
-//         });
-//     });
-//   };
-// };

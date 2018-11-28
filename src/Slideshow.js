@@ -44,7 +44,7 @@ export default class Slideshow extends Component {
           {images.map((image, index) => (
             <Collapse key={index} isOpen={index === this.state.imgIndex}>
               {" "}
-              <img src={image} style={{ maxWidth: "100%" }} />
+              <img src={image} alt='rental property' style={{ maxWidth: "100%" }} />
             </Collapse>
           ))}
         </Col>

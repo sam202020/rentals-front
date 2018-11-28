@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import Checkbox from "rc-checkbox";
 import 'rc-checkbox/assets/index.css';
 

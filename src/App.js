@@ -3,14 +3,16 @@ import { Switch, Route } from "react-router-dom";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { fetchRentals, saveCurrentUser } from "./actions";
+import Axios from 'axios'
 
 import NavComp from "./NavComp";
 import ScrollControl from "./ScrollControl";
 import RentalsList from "./RentalsList";
 import AddRental from "./AddRental";
 import Payment from "./Payment";
+import EditRental from "./EditRental";
 import UserDashboard from "./UserComponents/UserDashboard";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import FirebaseLogin from "./UserComponents/FirebaseLogin";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
@@ -27,8 +29,9 @@ const config = {
 firebase.initializeApp(config);
 
 const mapStateToProps = state => {
-  const { rentals, rentalPortions, groupCounter } = state;
+  const { user, rentals, rentalPortions, groupCounter } = state;
   return {
+    user,
     rentals,
     rentalPortions,
     groupCounter
@@ -36,25 +39,26 @@ const mapStateToProps = state => {
 };
 
 class App extends Component {
-
   state = {
-    isSignedIn: false
+    isSignedIn: false,
   };
 
   componentDidMount() {
     this.props.fetchRentals();
-    this.unregisterAuthObserver = firebase
-      .auth()
-      .onAuthStateChanged(user => {
-        if (user) this.props.saveCurrentUser(user.email);
-        else this.props.saveCurrentUser(null);
-        this.setState({ isSignedIn: !!user })
-      });
-  };
+    this.unlisten = this.props.history.listen((location, action) => {
+      if (location.pathname === "/") this.props.fetchRentals();
+    });
+    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
+      if (user) this.props.saveCurrentUser(user.displayName);
+      else this.props.saveCurrentUser(null);
+      this.setState({ isSignedIn: !!user });
+    });
+  }
 
   componentWillUnmount() {
+    this.unlisten();
     this.unregisterAuthObserver();
-  };
+  }
 
   render() {
     const { rentals, rentalPortions, groupCounter } = this.props;
@@ -62,7 +66,11 @@ class App extends Component {
     return (
       <div style={{ cursor: "context-menu" }}>
         <CssBaseline />
-        <NavComp className="sticky-top" user={this.state.isSignedIn} />
+        <NavComp
+          className="sticky-top"
+          user={this.state.isSignedIn}
+          username={this.props.user}
+        />
         <Switch>
           <Route
             exact
@@ -80,6 +88,10 @@ class App extends Component {
           <Route
             path="/add-rental"
             render={routerProps => <AddRental {...routerProps} />}
+          />
+          <Route
+            path="/edit-rental/:id"
+            render={routerProps => <EditRental {...routerProps} />}
           />
           <Route
             path="/sign-up"

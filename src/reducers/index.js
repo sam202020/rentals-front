@@ -1,9 +1,9 @@
+// General Note: Dan Abramov can suck my dick.
+import axios from 'axios'
 import {
   FETCHING_RENTALS,
   ERROR,
   FETCHED_RENTALS,
-  ADDING_RENTALS,
-  ADDED_RENTALS,
   GET_RENTAL_GROUP,
   SAVE_UI_STATE,
   GET_CURRENT_USER
@@ -82,6 +82,7 @@ const rentalsReducer = (state = initialState, action) => {
 };
 
 const splitRentals = rentals => {
+  return rentals;
   const arraySplit = [];
   const divideByTen = Math.floor(rentals.length / 10);
   let start = 0;

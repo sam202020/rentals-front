@@ -1,6 +1,6 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 
-export default class ScrollControl extends PureComponent {
+export default class ScrollControl extends Component {
   state = {
     rentals: this.props.rentalPortions[0],
     num: 0,
@@ -22,16 +22,14 @@ export default class ScrollControl extends PureComponent {
     
   }
   render() {
-    const {rentalPortions, groupCounter, rentals} = this.props;
-    console.log(groupCounter)
+    const {rentalPortions, groupCounter, rentals } = this.props;
     const rentalsDisplay = rentalPortions[groupCounter];
     return (
       <div>
         {React.cloneElement(this.props.component, {
-          ref: this.displayRef,
           rentals: rentalsDisplay,
           numRentals: rentals.length,
-          onScroll: this.handleScroll
+          onScroll: () => this.handleScroll(this.displayRef)
         })}
       </div>
     );

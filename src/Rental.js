@@ -8,7 +8,7 @@ import {
   Col,
   Modal,
   ModalHeader,
-  ModalBody, 
+  ModalBody,
   Button
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +19,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Slideshow from "./Slideshow";
+
+/*eslint no-extend-native: ["error", { "exceptions": ["String"] }]*/
 
 export default class Rental extends PureComponent {
   state = {
@@ -118,118 +120,114 @@ export default class Rental extends PureComponent {
     else if (type === "A" || type === "apartment")
       icon = <FontAwesomeIcon icon={faBuilding} />;
     else icon = <FontAwesomeIcon icon={faPersonBooth} />;
-
-    // let images;
-    // if (pictures[0]) {
-    //   images = pictures.map(img => {
-    //     let imgObj = {};
-    //     imgObj.src = img;
-    //     return imgObj;
-    //   });
-    // }
-
     return (
-      <Row className="mt-3 ml-3">
-        <Col>
-          <Card
+      <Card
+        style={{
+          border: "1px solid black",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {pictures[0] && (
+          <Col
+            lg="2"
             style={{
-              border: "1px solid black",
+              borderRight: "0.5px solid gray",
+              cursor: "zoom-in",
               display: "flex",
-              flexDirection: "row"
+              flexDirection: "column",
+              justifyContent: "center",
+              textAlign: "center"
             }}
+            onClick={this.handleModal}
           >
-            {pictures[0] && (
-              <Col
-                lg="2"
-                style={{
-                  borderRight: '0.5px solid gray',
-                  cursor: "zoom-in",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  textAlign: "center"
-                }}
-                onClick={this.handleModal}
-              ><p>Click to see Pictures</p>
-              <Button outline color="primary">
-                <img
-                  alt="rental property"
-                  src={pictures[0]}
-                  style={{ maxWidth: "100%"}}
-                /></Button>
-                <Modal
-                  size="lg"
-                  isOpen={this.state.picModal}
-                  toggle={this.handleModal}
-                >
-                  <ModalHeader toggle={this.handleModal}>
-                    Pictures of Property
-                  </ModalHeader>
-                  <ModalBody>
-                    <Slideshow images={pictures} />
-                  </ModalBody>
-                </Modal>
+            <p>Click to see Pictures</p>
+            <Button outline color="primary">
+              <img
+                alt="rental property"
+                src={pictures[0]}
+                style={{ maxWidth: "100%" }}
+              />
+            </Button>
+            <Modal
+              size="lg"
+              isOpen={this.state.picModal}
+              toggle={this.handleModal}
+            >
+              <ModalHeader toggle={this.handleModal}>
+                Pictures of Property
+              </ModalHeader>
+              <ModalBody>
+                <Slideshow images={pictures} />
+              </ModalBody>
+            </Modal>
+          </Col>
+        )}
+
+        <CardBody>
+          <CardTitle>
+            <Row style={{ borderBottom: "1px solid gray" }}>
+              <Col className="mt-2 text-center">
+                <h4>
+                  {icon} {this.typeFormat(type)}
+                </h4>
               </Col>
-            )}
-
-            <CardBody>
-              <CardTitle>
-                <Row style={{borderBottom: '1px solid gray'}}>
-                  <Col className="mt-2 text-center">
-                    <h4>
-                      {icon} {this.typeFormat(type)}
-                    </h4>
-                  </Col>
-                  <Col className="mt-2 text-center">
-                    <h4>{this.toTitleCase(location)}</h4>{" "}
-                  </Col>
-                  {hud && (
-                    <Col className="mt-2 text-center">
-                      <h4 style={{ color: "gray" }}>HUD Eligible</h4>
-                    </Col>
-                  )}
-                </Row>
-                <Row>
-                  <Col className="mt-3 text-center">
-                    <h5 style={{ color: "gray" }}>{bedrooms} Bedrooms</h5>
-                  </Col>
-                  <Col className="mt-3 text-center">
-                    <h5 style={{ color: "gray" }}>{baths} Bathrooms</h5>
-                  </Col>
-                  {wePay[0] && (
-                    <Col className="mt-3 text-center">
-                      <h5 style={{ color: "gray" }}>
-                        Owner Pays: {this.wePayFormat(wePay)}
-                      </h5>
-                    </Col>
-                  )}
-                </Row>
-                <Row>
-                  <Col className="mt-3 text-center">
-                    {price ? (
-                      <h5>
-                        ${price}
-                        .00
-                      </h5>
-                    ) : (
-                      <h5>Please Call for Price</h5>
-                    )}
-                  </Col>
-
-                  <Col className="mt-3 text-center">
-                  <a href={"tel:" + phone}>
+              <Col className="mt-2 text-center">
+                {price ? (
+                  <h5>
+                    ${price}
+                    .00
+                  </h5>
+                ) : (
+                  <h5>Call for Price</h5>
+                )}
+              </Col>
+              <Col className="mt-2 text-center">
+                <h4>{this.toTitleCase(location)}</h4>{" "}
+              </Col>
+            </Row>
+            <Row>
+              <Col className="mt-3 text-center">
+                <h5 style={{ color: "gray" }}>{bedrooms} Bedrooms</h5>
+              </Col>
+              <Col className="mt-3 text-center">
+                <h5 style={{ color: "gray" }}>{baths} Bathrooms</h5>
+              </Col>
+              {wePay[0] && (
+                <Col className="mt-3 text-center">
+                  <h5 style={{ color: "gray" }}>
+                    Owner Pays: {this.wePayFormat(wePay)}
+                  </h5>
+                </Col>
+              )}
+              {hud && (
+                <Col className="mt-2 text-center">
+                  <h4 style={{ color: "gray" }}>HUD Eligible</h4>
+                </Col>
+              )}
+            </Row>
+            <Row>
+              <Col className="mt-3 text-center">
+                <a href={"tel:" + phone}>
                   <Button outline color="primary">
-                  
-                    Call {this.phoneFormat(phone)}</Button></a>
-                  </Col>
-                  <div className="mt-3">{email}</div>
-                </Row>
-              </CardTitle>
-              <CardText className="text-center mt-4">{comments}</CardText>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
+                    Call: {this.phoneFormat(phone)}
+                  </Button>
+                </a>
+              </Col>
+              {email && (
+                <Col className="mt-3 text-center">
+                  <a href={"mailto:" + email}>
+                    <Button outline color="primary">
+                      Email: {email}
+                    </Button>
+                  </a>
+                </Col>
+              )}
+            </Row>
+          </CardTitle>
+          <CardText className="text-center mt-4">{comments}</CardText>
+        </CardBody>
+      </Card>
     );
   }
 }

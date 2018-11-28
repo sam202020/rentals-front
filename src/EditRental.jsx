@@ -24,19 +24,28 @@ import Ionicon from "react-ionicons";
 
 import firebase from "firebase/app";
 import validator from "validator";
+import { ClipLoader } from "react-spinners";
+import { css } from "react-emotion";
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+`;
 
 const mapStateToProps = state => {
-  const { UIState, user } = state;
+  const { UIState, user, rentals } = state;
   return {
     user,
-    UIState
+    UIState,
+    rentals
   };
 };
 
 const options = [
-  { value: "Apartment", label: "Apartment" },
-  { value: "House", label: "House" },
-  { value: "Townhouse", label: "Townhouse" }
+  { value: "apartment", label: "Apartment" },
+  { value: "house", label: "House" },
+  { value: "townhouse", label: "Townhouse" }
 ];
 
 const numbers = [];
@@ -45,10 +54,10 @@ for (let i = 1; i <= 10; i++) numbers.push({ value: i, label: i });
 const bathNumbers = numbers.slice(0, 6);
 
 const wePayValues = [
-  { value: "Gas", label: "Gas" },
-  { value: "Electricity", label: "Electricity" },
-  { value: "Water", label: "Water" },
-  { value: "Heat", label: "Heat" }
+  { value: "gas", label: "Gas" },
+  { value: "electricity", label: "Electricity" },
+  { value: "water", label: "Water" },
+  { value: "heat", label: "Heat" }
 ];
 
 const yesOrNoValues = [
@@ -56,45 +65,79 @@ const yesOrNoValues = [
   { value: false, label: "Not eligible for HUD" }
 ];
 
-class AddRental extends Component {
-  state = {
-    page: 1,
-    alert: false,
-    redirect: false,
-    to: "/",
-    pictures: [],
-    value: "",
-    type: "",
-    location: "",
-    bedrooms: "",
-    baths: "",
-    wePay: "",
-    phone: "",
-    comments: "",
-    imageURL: "",
-    price: "",
-    email: "",
-    errorMessage: "",
-    hud: false,
-    errorMessages: {
-      type: false,
-      bedroom: false,
-      bath: false,
-      location: false,
-      phone: false,
-      email: false
-    },
-    displayedComps: {
-      type: true,
-      bedrooms: false,
-      bathrooms: false,
-      location: false,
-      rightArrow: false,
-      price: false,
-      contact: false,
-      pictures: false
+class EditRental extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      mounted: false,
+      page: 1,
+      alert: false,
+      redirect: false,
+      to: "/",
+      pictures: [],
+      type: null,
+      location: null,
+      bedrooms: null,
+      baths: null,
+      wePay: "",
+      phone: "",
+      comments: "",
+      price: "",
+      email: "",
+      errorMessage: "",
+      hud: false,
+      errorMessages: {
+        type: false,
+        bedroom: false,
+        bath: false,
+        location: false,
+        phone: false,
+        email: false
+      },
+      displayedComps: {
+        type: true,
+        bedrooms: true,
+        bathrooms: true,
+        location: true,
+        rightArrow: true,
+        price: false,
+        contact: false,
+        pictures: false
+      }
+    };
+  }
+
+  componentDidMount() {
+    let id;
+    if (!firebase.auth().currentUser) {
+      return;
+    } else {
+      id = firebase
+        .auth()
+        .currentUser.getIdToken(/* forceRefresh */ true)
+        .then(function(idToken) {
+          this.idToken = idToken;
+          return idToken;
+        })
+        .catch(function(error) {
+          console.error(error);
+          return null;
+        });
+      if (this.idToken) {
+        const index = this.props.location.pathname.slice(1);
+        const rentalID = index.slice(index.indexOf("/") + 1);
+        Axios.get(`http://localhost:3001/${rentalID}?token=${id}`)
+          .then(response => {
+            this.setState({ ...response.data, mounted: true });
+          })
+          .catch(err => {
+            console.error(err);
+            this.setState({ redirect: true, to: "/signin" });
+          });
+      }
     }
-  };
+  }
 
   handleInput = value => {
     if (value.length === 11) return;
@@ -109,9 +152,7 @@ class AddRental extends Component {
 
   checkForEmailOrPhone = () => {
     const { email, phone } = this.state;
-    console.log(phone.length);
     if (phone.length === 10 || validator.isEmail(email)) {
-      console.log(phone.length);
       this.setState(state => ({
         errorMessages: { ...state.errorMessages, email: false },
         displayedComps: { ...state.displayedComps, rightArrow: true }
@@ -125,12 +166,13 @@ class AddRental extends Component {
   handleInputPrice = e => {
     e.persist();
     if (isNaN(e.target.value)) this.setState({ errorMessage: true });
-    else
+    else {
       this.setState(state => ({
         errorMessage: false,
         price: e.target.value,
         displayedComps: { ...state.displayedComps, contact: true }
       }));
+    }
   };
 
   handleInputEmail = e => {
@@ -168,10 +210,11 @@ class AddRental extends Component {
   };
 
   handleLocationChange = e => {
+    e.persist();
     const value = e.target.value;
     const rightArrow = value.length >= 3;
     this.setState(state => ({
-      location: value,
+      location: e.target.value,
       errorMessages: { ...state.errorMessages, location: false },
       displayedComps: { ...state.displayedComps, rightArrow }
     }));
@@ -202,7 +245,6 @@ class AddRental extends Component {
   };
 
   addImage = e => {
-    console.log(e);
     if (e.target.value.length > 0) {
       console.log(e.target.value);
     }
@@ -275,7 +317,7 @@ class AddRental extends Component {
       }
     }
 
-    Axios.post("http://localhost:3001", {
+    Axios.put("http://localhost:3001", {
       user: id,
       type,
       location,
@@ -343,7 +385,7 @@ class AddRental extends Component {
     this.props.saveUIState(this.state, page);
     if (page === 1) {
       this.setState(state => ({
-        displayedComps: { type: false, price: true },
+        displayedComps: { type: false, price: true, rightArrow: true },
         page: state.page + 1
       }));
     } else {
@@ -364,7 +406,6 @@ class AddRental extends Component {
 
   handleEmailValidation = () => {
     const { email } = this.state;
-    console.log(email);
     if (email && !validator.isEmail(email)) {
       this.setState(state => ({
         errorMessages: { ...state.errorMessages, email: true }
@@ -392,8 +433,10 @@ class AddRental extends Component {
 
   render() {
     const back = "< Need to Change Something?";
+    let price = "";
+    if (this.state.price) price = this.state.price;
     const {
-      price,
+      type,
       errorMessage,
       location,
       phone,
@@ -408,6 +451,16 @@ class AddRental extends Component {
     const isNotEmail = errorMessages.email;
     let isError = false;
     for (let i in errorMessages) if (errorMessages[i] === true) isError = true;
+    if (!type)
+      return (
+        <ClipLoader
+          className={override}
+          sizeUnit={"px"}
+          size={150}
+          color={"#123abc"}
+          loading={!type}
+        />
+      );
     return (
       <Container style={{ minHeight: "1000px" }}>
         <Modal isOpen={alert}>
@@ -440,7 +493,7 @@ class AddRental extends Component {
                     fontSize="35px"
                     color="green"
                   />
-                  Have a rental property to list? Do it in 3 easy steps:
+                  Need to edit your listing? Do it in 3 easy steps:
                 </h5>
               </Col>
             </Row>
@@ -462,6 +515,10 @@ class AddRental extends Component {
               </Col>
               <Col className="mt-4" lg={{ size: 4 }}>
                 <Select
+                  defaultValue={{
+                    value: this.state.type,
+                    label: this.state.type
+                  }}
                   styles={customStyles}
                   options={options}
                   placeholder="Type"
@@ -706,6 +763,10 @@ class AddRental extends Component {
               </Col>
               <Col className="mt-4" lg={{ size: 4 }}>
                 <Select
+                  defaultValue={{
+                    value: this.state.bedrooms,
+                    label: this.state.bedrooms
+                  }}
                   styles={customStyles}
                   options={numbers}
                   placeholder="Bedrooms"
@@ -737,6 +798,10 @@ class AddRental extends Component {
               </Col>
               <Col className="mt-4" lg={{ size: 4 }}>
                 <Select
+                  defaultValue={{
+                    value: this.state.baths,
+                    label: this.state.baths
+                  }}
                   styles={customStyles}
                   options={bathNumbers}
                   placeholder="Bathrooms"
@@ -817,5 +882,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     { saveUIState }
-  )(AddRental)
+  )(EditRental)
 );

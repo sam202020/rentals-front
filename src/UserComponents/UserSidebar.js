@@ -1,26 +1,26 @@
-import React from 'react'
-import './UserSidebar.css'
+import React from "react";
+import "./UserSidebar.css";
 
 function UserSidebar() {
   return (
-    <div className="container-fluid" style={{textAlign:'left'}}>
-    <div className="row">
-      <nav className="col-md-2 d-none d-md-block bg-light sidebar">
-        <div className="sidebar-sticky" style={{marginTop: 2}}>
-          <ul className="nav flex-column">
-            <li className="nav-item">
-              <a className="nav-link active" href="#">
-                <span data-feather="home"></span>
-                My Rentals <span className="sr-only">(current)</span>
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                <span data-feather="file"></span>
-                My Account
-              </a>
-            </li>
-            {/* <li className="nav-item">
+    
+      <div className="row">
+        <nav className="col-md-2 d-none d-md-block bg-light sidebar">
+          <div className="sidebar-sticky" style={{ marginTop: 2 }}>
+            <ul className="nav flex-column">
+              <li className="nav-item">
+                <a className="nav-link active" href="#">
+                  <span data-feather="home" />
+                  My Rentals <span className="sr-only">(current)</span>
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#">
+                  <span data-feather="file" />
+                  My Account
+                </a>
+              </li>
+              {/* <li className="nav-item">
               <a className="nav-link" href="#">
                 <span data-feather="shopping-cart"></span>
                 Products
@@ -38,7 +38,7 @@ function UserSidebar() {
                 Reports
               </a>
             </li> */}
-            {/* <li className="nav-item">
+              {/* <li className="nav-item">
               <a className="nav-link" href="#">
                 <span data-feather="layers"></span>
                 Integrations
@@ -77,10 +77,10 @@ function UserSidebar() {
                 Year-end sale
               </a>
             </li> */}
-          </ul>
-        </div>
-      </nav>
-      </div></div>
+            </ul>
+          </div>
+        </nav>
+      </div>
   );
 }
 
