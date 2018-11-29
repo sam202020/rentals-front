@@ -127,7 +127,7 @@ class EditRental extends Component {
       if (this.idToken) {
         const index = this.props.location.pathname.slice(1);
         const rentalID = index.slice(index.indexOf("/") + 1);
-        Axios.get(`http://localhost:3001/${rentalID}?token=${id}`)
+        Axios.get(`https://rentals-api.azurewebsites.net/${rentalID}?token=${id}`)
           .then(response => {
             this.setState({ ...response.data, mounted: true });
           })

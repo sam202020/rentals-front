@@ -4,7 +4,7 @@ import firebase from "firebase";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 
 const addUserToDB = async user => {
-  let response = await axios.post("http://localhost:3001/user", { user });
+  let response = await axios.post("https://rentals-api.azurewebsites.net/user", { user });
   if (response.status === 201) console.log(response);
   else console.log(response);
 };

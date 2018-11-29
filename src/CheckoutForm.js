@@ -21,7 +21,7 @@ class CheckoutForm extends React.Component {
     const name = fName + '\xa0' + lName;
     console.log(name);
     let { token } = await this.props.stripe.createToken({ name });
-    let response = await Axios.post('http://localhost:3001/payment', {token: token.id})
+    let response = await Axios.post('https://rentals-api.azurewebsites.net/payment', {token: token.id})
     if (response.status === 200) console.log("Purchase Complete!");
     else (console.log(response));
   }

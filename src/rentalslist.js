@@ -1,6 +1,5 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Suspense } from "react";
 import { Container, Row, Col } from "reactstrap";
-import Rental from "./Rental";
 import Axios from "axios";
 import Select from "react-select";
 import { ClipLoader } from "react-spinners";
@@ -12,6 +11,8 @@ import SliderFilter from "./SliderFilter";
 import CheckBox from "./CheckBox";
 import StickyBox from "react-sticky-box";
 import { customStyles } from "./customStyles";
+
+const Rental = React.lazy(() => import("./Rental"));
 
 const mapStateToProps = state => {
   const { minPrice, maxPrice, minBeds, maxBeds, minBaths, maxBaths } = state;
@@ -77,7 +78,7 @@ class RentalsList extends PureComponent {
     autoComplete.setFields(["geometry"]);
     autoComplete.addListener("place_changed", () => {
       this.setState({ loading: true }, () => {
-        Axios.post("http://localhost:3001/geometry", {
+        Axios.post("https://rentals-api.azurewebsites.net/geometry", {
           location: this.state.searchRef.current.value
         })
           .then(response => {
@@ -379,7 +380,9 @@ class RentalsList extends PureComponent {
                     </>
                   )}
                 </Col>
-                {rentalsDisplay}
+                <Suspense fallback={<div>Loading...</div>}>
+                  {rentalsDisplay}
+                </Suspense>
               </>
             )}
           </Col>

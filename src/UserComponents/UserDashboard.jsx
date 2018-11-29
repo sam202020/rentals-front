@@ -39,7 +39,7 @@ class UserDashboard extends Component {
         });
     }
     axios
-      .post(`http://localhost:3001/${rentalId}`, {
+      .post(`https://rentals-api.azurewebsites.net/${rentalId}`, {
         user: id,
         listing: rentalId
       })
