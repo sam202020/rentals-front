@@ -246,7 +246,8 @@ class RentalsList extends PureComponent {
       minBeds,
       maxBeds,
       minBaths,
-      maxBaths
+      maxBaths,
+      transferProps
     } = this.props;
     let rentals = this.props.reduxRentals;
     rentals = this.filterHud(
@@ -272,7 +273,7 @@ class RentalsList extends PureComponent {
         return (
           <Row key={rental._id}>
             <Col className="mt-3 ml-3">
-              <Rental {...rental} />{" "}
+              <Rental {...rental} transferProps={transferProps}/>{" "}
             </Col>
           </Row>
         );

@@ -77,7 +77,7 @@ class EditRental extends Component {
       to: "/",
       pictures: [],
       type: null,
-      location: null,
+      place: null,
       bedrooms: null,
       baths: null,
       wePay: "",
@@ -91,7 +91,7 @@ class EditRental extends Component {
         type: false,
         bedroom: false,
         bath: false,
-        location: false,
+        place: false,
         phone: false,
         email: false
       },
@@ -99,7 +99,7 @@ class EditRental extends Component {
         type: true,
         bedrooms: true,
         bathrooms: true,
-        location: true,
+        place: true,
         rightArrow: true,
         price: false,
         contact: false,
@@ -108,34 +108,32 @@ class EditRental extends Component {
     };
   }
 
-  componentDidMount() {
-    let id;
+  async componentDidMount() {
+    let id = null;
     if (!firebase.auth().currentUser) {
-      return;
+      this.setState({ redirect: true, to: "/signin" });
     } else {
-      id = firebase
+      id = await firebase
         .auth()
         .currentUser.getIdToken(/* forceRefresh */ true)
-        .then(function(idToken) {
-          this.idToken = idToken;
+        .then(idToken => {
           return idToken;
         })
-        .catch(function(error) {
+        .catch(error => {
           console.error(error);
           return null;
         });
-      if (this.idToken) {
-        const index = this.props.location.pathname.slice(1);
-        const rentalID = index.slice(index.indexOf("/") + 1);
-        Axios.get(`https://rentals-api.azurewebsites.net/${rentalID}?token=${id}`)
-          .then(response => {
-            this.setState({ ...response.data, mounted: true });
-          })
-          .catch(err => {
-            console.error(err);
-            this.setState({ redirect: true, to: "/signin" });
-          });
-      }
+    }
+    if (id) {
+      const rentalID = this.props.match.params.id;
+      Axios.get(`https://rentals-api.azurewebsites.net/${rentalID}?token=${id}`)
+        .then(response => {
+          this.setState({ ...response.data, mounted: true });
+        })
+        .catch(err => {
+          console.error(err);
+          this.setState({ redirect: true, to: "/signin" });
+        });
     }
   }
 
@@ -205,7 +203,7 @@ class EditRental extends Component {
     this.setState(state => ({
       baths: select.value,
       errorMessages: { ...state.errorMessages, bath: false },
-      displayedComps: { ...state.displayedComps, location: true }
+      displayedComps: { ...state.displayedComps, place: true }
     }));
   };
 
@@ -214,8 +212,8 @@ class EditRental extends Component {
     const value = e.target.value;
     const rightArrow = value.length >= 3;
     this.setState(state => ({
-      location: e.target.value,
-      errorMessages: { ...state.errorMessages, location: false },
+      place: e.target.value,
+      errorMessages: { ...state.errorMessages, place: false },
       displayedComps: { ...state.displayedComps, rightArrow }
     }));
   };
@@ -275,7 +273,7 @@ class EditRental extends Component {
     }
     const {
       type,
-      location,
+      place,
       bedrooms,
       baths,
       wePay,
@@ -300,8 +298,8 @@ class EditRental extends Component {
       return;
     }
 
-    if (!location) {
-      this.setState({ errorMessages: { location: true } });
+    if (!place) {
+      this.setState({ errorMessages: { place: true } });
       return;
     }
 
@@ -320,7 +318,7 @@ class EditRental extends Component {
     Axios.put("http://localhost:3001", {
       user: id,
       type,
-      location,
+      place,
       bedrooms,
       baths,
       wePay,
@@ -438,7 +436,7 @@ class EditRental extends Component {
     const {
       type,
       errorMessage,
-      location,
+      place,
       phone,
       comments,
       email,
@@ -816,7 +814,7 @@ class EditRental extends Component {
             </Row>
           </Collapse>
 
-          <Collapse isOpen={this.state.displayedComps.location}>
+          <Collapse isOpen={this.state.displayedComps.place}>
             <Row>
               <Col className="mt-4" lg={{ size: 6, offset: 3 }}>
                 <h6>Where is the property? </h6>
@@ -834,12 +832,12 @@ class EditRental extends Component {
                 <input
                   className="form-control"
                   placeholder="Enter Location"
-                  value={location}
+                  value={place}
                   name="location"
                   onChange={this.handleLocationChange}
                 />
               </Col>
-              {errorMessages.location && (
+              {errorMessages.place && (
                 <Col className="mt-4" lg="4">
                   <h4 style={{ color: "red" }}>Required</h4>
                 </Col>

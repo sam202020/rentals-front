@@ -22,11 +22,12 @@ export default class ScrollControl extends Component {
     
   }
   render() {
-    const {rentalPortions, groupCounter, rentals } = this.props;
+    const {rentalPortions, groupCounter, rentals, transferProps } = this.props;
     const rentalsDisplay = rentalPortions[groupCounter];
     return (
       <div>
         {React.cloneElement(this.props.component, {
+          transferProps,
           rentals: rentalsDisplay,
           numRentals: rentals.length,
           onScroll: () => this.handleScroll(this.displayRef)

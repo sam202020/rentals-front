@@ -1,5 +1,4 @@
 import "bootstrap/dist/css/bootstrap.css";
-import "react-virtualized/styles.css"; // only needs to be imported once
 import './index.css'
 
 import React from "react";

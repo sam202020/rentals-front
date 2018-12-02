@@ -1,4 +1,3 @@
-// General Note: Dan Abramov can suck my dick.
 import axios from 'axios'
 import {
   FETCHING_RENTALS,
@@ -24,7 +23,6 @@ const initialState = {
   addedRental: false,
   groupCounter: 0,
   UIState: null,
-  user: null
 };
 
 const rentalsReducer = (state = initialState, action) => {

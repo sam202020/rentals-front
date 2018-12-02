@@ -91,7 +91,7 @@ class UserDashboard extends Component {
           <Row style={{ borderBottom: "0.5px solid gainsboro" }}>
             <Col className="mt-2 text-center" xs={{ size: 6, offset: 4 }}>
               <h4>
-                {this.props.user.slice(0, this.props.user.indexOf(" "))}'s
+                {this.props.user.user.slice(0, this.props.user.user.indexOf(" "))}'s
                 Rental Listings
               </h4>
             </Col>

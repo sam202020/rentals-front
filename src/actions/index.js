@@ -9,11 +9,11 @@ export const ERROR = 'ERROR';
 export const SAVE_UI_STATE = 'SAVE_UI_STATE';
 export const GET_CURRENT_USER = 'GET_CURRENT_USER';
 
-export const saveCurrentUser = (user) => {
+export const saveCurrentUser = (user, token) => {
   return dispatch => {
     dispatch({
       type: GET_CURRENT_USER,
-      payload: user,
+      payload: {user, token}
     })
   }
 };

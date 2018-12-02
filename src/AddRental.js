@@ -275,7 +275,7 @@ class AddRental extends Component {
       }
     }
 
-    Axios.post("http://localhost:3001", {
+    Axios.post("https://rentals-api.azurewebsites.net", {
       user: id,
       type,
       location,

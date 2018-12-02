@@ -1,4 +1,5 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   Card,
   CardText,
@@ -17,14 +18,18 @@ import {
   faBuilding,
   faPersonBooth
 } from "@fortawesome/free-solid-svg-icons";
+import Chat from "./Chat/Chat.jsx";
+import { Link, Route, Redirect } from "react-router-dom";
+import { withRouter } from "react-router";
 
 import Slideshow from "./Slideshow";
 
 /*eslint no-extend-native: ["error", { "exceptions": ["String"] }]*/
 
-export default class Rental extends PureComponent {
+class Rental extends React.Component {
   state = {
-    picModal: false
+    picModal: false,
+    redirect: false
   };
   phoneFormat = number => {
     const numStr = number.toString();
@@ -94,10 +99,14 @@ export default class Rental extends PureComponent {
     this.setState({ picModal: !this.state.picModal });
   };
 
+  messageOwner = () => {
+    this.setState({ redirect: true });
+  };
+
   render() {
     const {
       type,
-      location,
+      place,
       bedrooms,
       baths,
       wePay,
@@ -106,9 +115,11 @@ export default class Rental extends PureComponent {
       pictures,
       price,
       email,
-      hud
+      hud,
+      _id,
+      user
     } = this.props;
-
+    if (this.state.redirect) return <Redirect push to={`/connect/${_id}`} />;
     let icon;
     if (
       type === "H" ||
@@ -121,113 +132,125 @@ export default class Rental extends PureComponent {
       icon = <FontAwesomeIcon icon={faBuilding} />;
     else icon = <FontAwesomeIcon icon={faPersonBooth} />;
     return (
-      <Card
-        style={{
-          border: "1px solid black",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        {pictures[0] && (
-          <Col
-            lg="2"
-            style={{
-              borderRight: "0.5px solid gray",
-              cursor: "zoom-in",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              textAlign: "center"
-            }}
-            onClick={this.handleModal}
-          >
-            <p>Click to see Pictures</p>
-            <Button outline color="primary">
-              <img
-                alt="rental property"
-                src={pictures[0]}
-                style={{ maxWidth: "100%" }}
-              />
-            </Button>
-            <Modal
-              size="lg"
-              isOpen={this.state.picModal}
-              toggle={this.handleModal}
+      <>
+        <Card
+          style={{
+            border: "1px solid black",
+            display: "flex",
+            flexDirection: "row"
+          }}
+        >
+          {pictures[0] && (
+            <Col
+              lg="2"
+              style={{
+                borderRight: "0.5px solid gray",
+                cursor: "zoom-in",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                textAlign: "center"
+              }}
+              onClick={this.handleModal}
             >
-              <ModalHeader toggle={this.handleModal}>
-                Pictures of Property
-              </ModalHeader>
-              <ModalBody>
-                <Slideshow images={pictures} />
-              </ModalBody>
-            </Modal>
-          </Col>
-        )}
+              <p>Click to see Pictures</p>
+              <Button outline color="primary">
+                <img
+                  alt="rental property"
+                  src={pictures[0]}
+                  style={{ maxWidth: "100%" }}
+                />
+              </Button>
+              <Modal
+                size="lg"
+                isOpen={this.state.picModal}
+                toggle={this.handleModal}
+              >
+                <ModalHeader toggle={this.handleModal}>
+                  Pictures of Property
+                </ModalHeader>
+                <ModalBody>
+                  <Slideshow images={pictures} />
+                </ModalBody>
+              </Modal>
+            </Col>
+          )}
 
-        <CardBody>
-          <CardTitle>
-            <Row style={{ borderBottom: "1px solid gray" }}>
-              <Col className="mt-2 text-center">
-                <h4>
-                  {icon} {this.typeFormat(type)}
-                </h4>
-              </Col>
-              <Col className="mt-2 text-center">
-                {price ? (
-                  <h5>
-                    ${price}
-                    .00
-                  </h5>
-                ) : (
-                  <h5>Call for Price</h5>
-                )}
-              </Col>
-              <Col className="mt-2 text-center">
-                <h4>{this.toTitleCase(location)}</h4>{" "}
-              </Col>
-            </Row>
-            <Row>
-              <Col className="mt-3 text-center">
-                <h5 style={{ color: "gray" }}>{bedrooms} Bedrooms</h5>
-              </Col>
-              <Col className="mt-3 text-center">
-                <h5 style={{ color: "gray" }}>{baths} Bathrooms</h5>
-              </Col>
-              {wePay[0] && (
-                <Col className="mt-3 text-center">
-                  <h5 style={{ color: "gray" }}>
-                    Owner Pays: {this.wePayFormat(wePay)}
-                  </h5>
-                </Col>
-              )}
-              {hud && (
+          <CardBody>
+            <CardTitle>
+              <Row style={{ borderBottom: "1px solid gray" }}>
                 <Col className="mt-2 text-center">
-                  <h4 style={{ color: "gray" }}>HUD Eligible</h4>
+                  <h4>
+                    {icon} {this.typeFormat(type)}
+                  </h4>
                 </Col>
-              )}
-            </Row>
-            <Row>
-              <Col className="mt-3 text-center">
-                <a href={"tel:" + phone}>
-                  <Button outline color="primary">
-                    Call: {this.phoneFormat(phone)}
-                  </Button>
-                </a>
-              </Col>
-              {email && (
+                <Col className="mt-2 text-center">
+                  {price ? (
+                    <h5>
+                      ${price}
+                      .00
+                    </h5>
+                  ) : (
+                    <h5>Call for Price</h5>
+                  )}
+                </Col>
+                <Col className="mt-2 text-center">
+                  <h4>{this.toTitleCase(place)}</h4>{" "}
+                </Col>
+              </Row>
+              <Row>
                 <Col className="mt-3 text-center">
-                  <a href={"mailto:" + email}>
+                  <h5 style={{ color: "gray" }}>{bedrooms} Bedrooms</h5>
+                </Col>
+                <Col className="mt-3 text-center">
+                  <h5 style={{ color: "gray" }}>{baths} Bathrooms</h5>
+                </Col>
+                {wePay[0] && (
+                  <Col className="mt-3 text-center">
+                    <h5 style={{ color: "gray" }}>
+                      Owner Pays: {this.wePayFormat(wePay)}
+                    </h5>
+                  </Col>
+                )}
+                {hud && (
+                  <Col className="mt-2 text-center">
+                    <h4 style={{ color: "gray" }}>HUD Eligible</h4>
+                  </Col>
+                )}
+              </Row>
+              <Row>
+                <Col className="mt-3 text-center">
+                  <a href={"tel:" + phone}>
                     <Button outline color="primary">
-                      Email: {email}
+                      Call: {this.phoneFormat(phone)}
                     </Button>
                   </a>
                 </Col>
-              )}
-            </Row>
-          </CardTitle>
-          <CardText className="text-center mt-4">{comments}</CardText>
-        </CardBody>
-      </Card>
+                {email && (
+                  <Col className="mt-3 text-center">
+                    <a href={"mailto:" + email}>
+                      <Button outline color="primary">
+                        Email: {email}
+                      </Button>
+                    </a>
+                  </Col>
+                )}
+              </Row>
+            </CardTitle>
+            <CardText className="text-center mt-4">
+              {comments}
+
+              <Button color='primary' onClick={() => this.messageOwner()}>Message Owner</Button>
+            </CardText>
+          </CardBody>
+        </Card>
+      </>
     );
   }
 }
+
+Rental.proptypes = {
+  location: PropTypes.string
+};
+
+export default withRouter(Rental);

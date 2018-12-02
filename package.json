@@ -50,8 +50,10 @@
     "redux-devtools": "^3.4.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "sendbird": "^3.0.91",
     "slick-carousel": "^1.8.1",
     "twilio-chat": "^3.1.0",
+    "twilio-common": "^0.1.7",
     "validator": "^10.8.0"
   },
   "scripts": {
