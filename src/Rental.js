@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   Card,
@@ -31,16 +31,19 @@ class Rental extends React.Component {
     picModal: false,
     redirect: false
   };
+
   phoneFormat = number => {
     const numStr = number.toString();
+    let newStr = numStr.replace(/-/g, "");
+    if (newStr.length < 9) newStr = "732" + newStr;
     return (
       "(" +
-      numStr.slice(0, 3) +
+      newStr.slice(0, 3) +
       ")" +
       " " +
-      numStr.slice(3, 6) +
+      newStr.slice(3, 6) +
       "-" +
-      numStr.slice(6)
+      newStr.slice(6, 10)
     );
   };
 
@@ -101,6 +104,10 @@ class Rental extends React.Component {
 
   messageOwner = () => {
     this.setState({ redirect: true });
+  };
+
+  numberFormat = number => {
+    return number.replace(/\D/g, "");
   };
 
   render() {
@@ -185,6 +192,9 @@ class Rental extends React.Component {
                   </h4>
                 </Col>
                 <Col className="mt-2 text-center">
+                  <h4>{this.toTitleCase(place)}</h4>{" "}
+                </Col>
+                <Col className="mt-2 text-center">
                   {price ? (
                     <h5>
                       ${price}
@@ -194,18 +204,19 @@ class Rental extends React.Component {
                     <h5>Call for Price</h5>
                   )}
                 </Col>
-                <Col className="mt-2 text-center">
-                  <h4>{this.toTitleCase(place)}</h4>{" "}
-                </Col>
               </Row>
               <Row>
                 <Col className="mt-3 text-center">
-                  <h5 style={{ color: "gray" }}>{bedrooms} Bedrooms</h5>
+                  <h5 style={{ color: "gray" }}>
+                    {this.numberFormat(bedrooms)} Bedrooms
+                  </h5>
                 </Col>
                 <Col className="mt-3 text-center">
-                  <h5 style={{ color: "gray" }}>{baths} Bathrooms</h5>
+                  <h5 style={{ color: "gray" }}>
+                    {this.numberFormat(baths)} Bathrooms
+                  </h5>
                 </Col>
-                {wePay[0] && (
+                {/* {wePay[0] && (
                   <Col className="mt-3 text-center">
                     <h5 style={{ color: "gray" }}>
                       Owner Pays: {this.wePayFormat(wePay)}
@@ -216,7 +227,7 @@ class Rental extends React.Component {
                   <Col className="mt-2 text-center">
                     <h4 style={{ color: "gray" }}>HUD Eligible</h4>
                   </Col>
-                )}
+                )} */}
               </Row>
               <Row>
                 <Col className="mt-3 text-center">
@@ -240,7 +251,9 @@ class Rental extends React.Component {
             <CardText className="text-center mt-4">
               {comments}
 
-              <Button color='primary' onClick={() => this.messageOwner()}>Message Owner</Button>
+              {/* <Button color="primary" onClick={() => this.messageOwner()}>
+                Message Owner
+              </Button> */}
             </CardText>
           </CardBody>
         </Card>

@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Collapse,
-  Modal,
-  ModalFooter,
-  ModalHeader,
-  ModalBody
-} from "reactstrap";
+import { Button, Modal, ModalFooter, ModalHeader, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 
 const NavModal = props => (

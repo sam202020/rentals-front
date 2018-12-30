@@ -95,7 +95,7 @@ export default class NavComp extends Component {
                       to="/user"
                       style={{ fontWeight: "bold", color: "blue", margin: 1 }}
                     >
-                      <h5>My Account</h5>
+                      <h5>My Rentals</h5>
                     </Link>
                   </NavItem>
                   <SignOut />

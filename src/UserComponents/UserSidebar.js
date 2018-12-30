@@ -11,21 +11,21 @@ function UserSidebar() {
             <li className="nav-item">
               <Link className="nav-link" to="/user">
                 <span data-feather="home" />
-                My Rentals <span className="sr-only">(current)</span>
+                My Rental Listings <span className="sr-only">(current)</span>
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/user">
+            {/* <li className="nav-item">
+              <Link className="nav-link" to="/my-messages">
                 <span data-feather="file" />
                 My Messages
               </Link>
-            </li>
-            <li className="nav-item">
+            </li> */}
+            {/* <li className="nav-item">
               <Link className="nav-link" to="/user">
                 <span data-feather="file" />
                 My Account
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </nav>

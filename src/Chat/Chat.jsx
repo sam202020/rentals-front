@@ -26,8 +26,8 @@ class Chat extends React.Component {
     console.log(postMessage);
     if (
       !postMessage ||
-      postMessage.result === "404" ||
-      postMessage.result === "500"
+      postMessage.status === 404 ||
+      postMessage.status === 500
     ) {
       this.handleRedirect();
     } else this.setState({ alert: true });

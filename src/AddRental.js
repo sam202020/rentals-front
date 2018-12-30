@@ -1,5 +1,5 @@
 import { customStyles } from "./customStyles";
-
+import FirebaseLogin from "./UserComponents/FirebaseLogin";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { saveUIState } from "./actions";
@@ -58,6 +58,7 @@ const yesOrNoValues = [
 
 class AddRental extends Component {
   state = {
+    redirectToLogin: false,
     page: 1,
     alert: false,
     redirect: false,
@@ -214,9 +215,14 @@ class AddRental extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    const { user } = this.props;
     let id;
-    if (user) {
+    const { page } = this.state;
+    const { user, saveUIState } = this.props;
+    saveUIState(this.state, page);
+    if (!firebase.auth().currentUser) {
+      this.setState({ redirectToLogin: true });
+      return;
+    } else {
       id = await firebase
         .auth()
         .currentUser.getIdToken(/* forceRefresh */ true)
@@ -230,72 +236,72 @@ class AddRental extends Component {
         .finally(function(idToken) {
           return idToken;
         });
-    }
-    const {
-      type,
-      location,
-      bedrooms,
-      baths,
-      wePay,
-      phone,
-      comments,
-      pictures,
-      price,
-      email,
-      hud
-    } = this.state;
-    if (!type) {
-      this.setState({ errorMessages: { type: true } });
-      return;
-    }
-    if (!bedrooms) {
-      this.setState({ errorMessages: { bedroom: true } });
-      return;
-    }
-
-    if (!baths) {
-      this.setState({ errorMessages: { bath: true } });
-      return;
-    }
-
-    if (!location) {
-      this.setState({ errorMessages: { location: true } });
-      return;
-    }
-
-    if (!phone && !email) {
-      this.setState({ errorMessages: { phone: true } });
-      return;
-    } else if (!phone) {
-      if (!validator.isEmail(email)) return;
-    } else if (!email) {
-      if (phone.length < 10) {
-        this.setState({ errorMessages: { phone: true } });
+      const {
+        type,
+        location,
+        bedrooms,
+        baths,
+        wePay,
+        phone,
+        comments,
+        pictures,
+        price,
+        email,
+        hud
+      } = this.state;
+      if (!type) {
+        this.setState({ errorMessages: { type: true } });
         return;
       }
-    }
+      if (!bedrooms) {
+        this.setState({ errorMessages: { bedroom: true } });
+        return;
+      }
 
-    Axios.post("https://rentals-api.azurewebsites.net", {
-      user: id,
-      type,
-      location,
-      bedrooms,
-      baths,
-      wePay,
-      phone,
-      comments,
-      pictures,
-      price,
-      email,
-      hud
-    })
-      .then(response => {
-        this.setState({ alert: true });
-      })
-      .catch(err => {
+      if (!baths) {
         this.setState({ errorMessages: { bath: true } });
-        console.error(err);
-      });
+        return;
+      }
+
+      if (!location) {
+        this.setState({ errorMessages: { location: true } });
+        return;
+      }
+
+      if (!phone && !email) {
+        this.setState({ errorMessages: { phone: true } });
+        return;
+      } else if (!phone) {
+        if (!validator.isEmail(email)) return;
+      } else if (!email) {
+        if (phone.length < 10) {
+          this.setState({ errorMessages: { phone: true } });
+          return;
+        }
+      }
+
+      Axios.post("https://rentals-api.azurewebsites.net", {
+        user: id,
+        type,
+        location,
+        bedrooms,
+        baths,
+        wePay,
+        phone,
+        comments,
+        pictures,
+        price,
+        email,
+        hud
+      })
+        .then(response => {
+          this.setState({ alert: true });
+        })
+        .catch(err => {
+          this.setState({ errorMessages: { bath: true } });
+          console.error(err);
+        });
+    }
   };
 
   uploadWidget = () => {
@@ -390,6 +396,12 @@ class AddRental extends Component {
     this.setState({ redirect: true, to: to });
   };
 
+  componentDidMount() {
+    if (!firebase.auth().currentUser) {
+      this.setState({redirectToLogin: true});
+    }
+  }
+
   render() {
     const back = "< Need to Change Something?";
     const {
@@ -402,8 +414,10 @@ class AddRental extends Component {
       errorMessages,
       redirect,
       alert,
-      to
+      to,
+      redirectToLogin
     } = this.state;
+    if (redirectToLogin) return <FirebaseLogin history={this.props.history} />;
     if (redirect) return <Redirect push to={to} />;
     const isNotEmail = errorMessages.email;
     let isError = false;
@@ -532,7 +546,7 @@ class AddRental extends Component {
               </>
             )}
 
-            <Row>
+            {/* <Row>
               <Col className="mt-4" lg={{ size: 6, offset: 3 }}>
                 <h6>
                   Is the owner paying for utilities while the property is
@@ -569,7 +583,7 @@ class AddRental extends Component {
                   onChange={this.handleHud}
                 />
               </Col>
-            </Row>
+            </Row> */}
           </Collapse>
 
           <Collapse isOpen={this.state.displayedComps.price}>

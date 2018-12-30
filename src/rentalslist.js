@@ -77,24 +77,40 @@ class RentalsList extends PureComponent {
     );
     autoComplete.setFields(["geometry"]);
     autoComplete.addListener("place_changed", () => {
-      this.setState({ loading: true }, () => {
-        Axios.post("https://rentals-api.azurewebsites.net/geometry", {
-          location: this.state.searchRef.current.value
-        })
-          .then(response => {
-            const { lat, lng } = response.data;
-            if (!response.data || !lat || !lng) {
-              this.setState({ searchObj: null, loading: false });
-            } else {
-              this.setState({ searchObj: { lat, lng }, loading: false });
-            }
+      this.setState(
+        {
+          loading: true
+        },
+        () => {
+          Axios.post("https://rentals-api.azurewebsites.net/geometry", {
+            location: this.state.searchRef.current.value
           })
-          .catch(err => {
-            console.error(err);
-          });
-      });
+            .then(response => {
+              const { lat, lng } = response.data;
+              if (!response.data || !lat || !lng) {
+                this.setState({
+                  searchObj: null,
+                  loading: false
+                });
+              } else {
+                this.setState({
+                  searchObj: {
+                    lat,
+                    lng
+                  },
+                  loading: false
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+      );
     });
-    this.setState({ loading: false });
+    this.setState({
+      loading: false
+    });
   };
 
   calcDistance = (latB, latA, lngB, lngA) => {
@@ -127,14 +143,16 @@ class RentalsList extends PureComponent {
   };
 
   filterType = memoize((list, filterBy) => {
+    console.log(filterBy);
     if (typeof filterBy === undefined || filterBy == null) return list;
     if (Object.keys(filterBy).length === 0 && filterBy.constructor === Object)
       return list;
     const filteredList = list.filter(
-      rental => rental.type in filterBy && filterBy[rental.type] === true
+      rental =>
+        rental.type.toLowerCase() in filterBy && filterBy[rental.type] === true
     );
     if (!filteredList[0]) return null;
-
+    console.log(filteredList);
     return filteredList;
   });
 
@@ -144,8 +162,10 @@ class RentalsList extends PureComponent {
     for (let option of selectedGroup) {
       filterObj[option] = true;
     }
-
-    this.setState({ filterObj: filterObj });
+    console.log(filterObj);
+    this.setState({
+      filterObj: filterObj
+    });
   };
 
   handleDisplay = () => {
@@ -166,7 +186,9 @@ class RentalsList extends PureComponent {
   };
 
   handleChange = (value, type) => {
-    this.setState({ [type]: value });
+    this.setState({
+      [type]: value
+    });
   };
 
   filterPrice = memoize((list, price) => {
@@ -227,7 +249,9 @@ class RentalsList extends PureComponent {
   });
 
   handleCheck = e => {
-    this.setState({ hud: e.target.checked });
+    this.setState({
+      hud: e.target.checked
+    });
   };
 
   render() {
@@ -273,8 +297,8 @@ class RentalsList extends PureComponent {
         return (
           <Row key={rental._id}>
             <Col className="mt-3 ml-3">
-              <Rental {...rental} transferProps={transferProps}/>{" "}
-            </Col>
+              <Rental {...rental} transferProps={transferProps} />{" "}
+            </Col>{" "}
           </Row>
         );
       });
@@ -284,10 +308,12 @@ class RentalsList extends PureComponent {
       <Container>
         <h5
           className="text-center mt-3"
-          style={{ fontFamily: "Roboto, sans-serif" }}
+          style={{
+            fontFamily: "Roboto, sans-serif"
+          }}
         >
           Find an Apartment, House, Townhouse, or Room for rent in Lakewood, NJ{" "}
-        </h5>
+        </h5>{" "}
         <Row>
           <Col
             lg="3"
@@ -297,60 +323,76 @@ class RentalsList extends PureComponent {
             }}
           >
             <StickyBox offsetTop={100}>
-              <h4 style={{ color: "blue" }}>Search</h4>
-
+              <h4
+                style={{
+                  color: "blue"
+                }}
+              >
+                {" "}
+                Search{" "}
+              </h4>
               <input
                 className="mt-2 css-1pnvzwf"
                 type="text"
-                style={{ width: "100%", cursor: "pointer", paddingLeft: 10 }}
+                style={{
+                  width: "100%",
+                  cursor: "pointer",
+                  paddingLeft: 10
+                }}
                 placeholder="Enter Location"
                 ref={this.state.searchRef}
-              />
+              />{" "}
               <div
                 className="mt-3"
-                style={{ borderBottom: "1px solid gray" }}
-              />
-              <h5 style={{ color: "blue" }} className="mt-4">
-                Looking for an Apartment, House, Townhouse, or Room?{" "}
-              </h5>
+                style={{
+                  borderBottom: "1px solid gray"
+                }}
+              />{" "}
+              <h5
+                style={{
+                  color: "blue"
+                }}
+                className="mt-4"
+              >
+                Looking for an Apartment, House, Townhouse, or Room ?{" "}
+              </h5>{" "}
               <Select
                 placeholder="Select"
                 isMulti
                 onChange={this.handleFilter.bind(this)}
                 options={options}
                 styles={customStyles}
-              />
-              {minPrice && <h6 className="mt-4">Price</h6>}
+              />{" "}
+              {minPrice && <h6 className="mt-4"> Price </h6>}{" "}
               <SliderFilter
                 name={"minMaxPrice"}
                 min={minPrice}
                 max={maxPrice}
                 handleChange={this.handleChange}
-              />
-              <h6 className="mt-4"># Bedrooms</h6>
+              />{" "}
+              <h6 className="mt-4"> #Bedrooms </h6>{" "}
               <SliderFilter
                 name={"minMaxBeds"}
                 min={minBeds}
                 max={maxBeds}
                 handleChange={this.handleChange}
-              />
-              <h6 className="mt-4"># Bathrooms</h6>
+              />{" "}
+              <h6 className="mt-4"> #Bathrooms </h6>{" "}
               <SliderFilter
                 name={"minMaxBaths"}
                 min={minBaths}
                 max={maxBaths}
                 handleChange={this.handleChange}
-              />
+              />{" "}
               {/* <div
-                className="mt-4"
-                style={{ display: "flex", flexDirection: "row" }}
-              >
-                <CheckBox name={"hud"} onChange={this.handleCheck} />{" "}
-                <h6 style={{ marginTop: 3 }}>Eligible for HUD</h6>
-              </div> */}
-            </StickyBox>
+                            className="mt-4"
+                            style={{ display: "flex", flexDirection: "row" }}
+                          >
+                            <CheckBox name={"hud"} onChange={this.handleCheck} />{" "}
+                            <h6 style={{ marginTop: 3 }}>Eligible for HUD</h6>
+                          </div> */}{" "}
+            </StickyBox>{" "}
           </Col>
-
           <Col className="text-center">
             <ClipLoader
               className={override}
@@ -359,35 +401,38 @@ class RentalsList extends PureComponent {
               color={"#123abc"}
               loading={loading}
             />
-
             {rentals === null ? (
               <Row>
                 <Col className="mt-5 text-center">
-                  <h4>No Rentals with Selected Options</h4>
+                  <h4> No Rentals with Selected Options </h4>{" "}
                 </Col>{" "}
               </Row>
             ) : (
               <>
                 <Col className="mt-4 text-center">
+                  {" "}
                   {!loading && numRentals > 0 && numRentals && (
                     <>
+                      {" "}
                       {numRentals === this.props.reduxRentals.length ? (
-                        <h6>{numRentals} Rentals Available</h6>
+                        <h6> {numRentals} Rentals Available </h6>
                       ) : (
                         <h6>
-                          {numRentals} Rentals Available With Selected Options
+                          {" "}
+                          {numRentals} Rentals Available With Selected Options{" "}
                         </h6>
-                      )}
+                      )}{" "}
                     </>
-                  )}
-                </Col>
-                <Suspense fallback={<div>Loading...</div>}>
-                  {rentalsDisplay}
-                </Suspense>
+                  )}{" "}
+                </Col>{" "}
+                <Suspense fallback={<div> Loading... </div>}>
+                  {" "}
+                  {rentalsDisplay}{" "}
+                </Suspense>{" "}
               </>
-            )}
-          </Col>
-        </Row>
+            )}{" "}
+          </Col>{" "}
+        </Row>{" "}
       </Container>
     );
   }

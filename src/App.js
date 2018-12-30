@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, lazy, suspense } from "react";
 import { Switch, Route } from "react-router-dom";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
@@ -12,6 +12,7 @@ import AddRental from "./AddRental";
 import Payment from "./Payment";
 import EditRental from "./EditRental";
 import UserDashboard from "./UserComponents/UserDashboard";
+import Messages from "./UserComponents/Messages.jsx";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/messaging";
@@ -59,7 +60,6 @@ class App extends Component {
       if (location.pathname === "/") this.props.fetchRentals();
     });
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
-      console.log(user);
       if (user) this.props.saveCurrentUser(user.displayName, user.qa);
       else this.props.saveCurrentUser(null);
       this.setState({ isSignedIn: !!user });
@@ -110,7 +110,7 @@ class App extends Component {
             render={routerProps => <EditRental {...routerProps} />}
           />
           <Route
-            path="/sign-up"
+            path="/subscribe"
             render={routerProps => <Payment {...routerProps} />}
           />
           <Route
@@ -123,7 +123,11 @@ class App extends Component {
           />
           <Route
             path="/connect/:id"
-            render={(routerProps) => <Chat {...routerProps} />}
+            render={routerProps => <Chat {...routerProps} />}
+          />
+          <Route
+            path="/my-messages"
+            render={routerProps => <Messages {...routerProps} />}
           />
         </Switch>
       </div>
