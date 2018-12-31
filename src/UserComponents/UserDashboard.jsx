@@ -79,31 +79,27 @@ class UserDashboard extends Component {
     if (userRentals) {
       rentalsDisplay = userRentals.map(rental => {
         return (
-          <Fragment key={rental._id}>
-            <Row>
-              <Col
-                className="mt-3"
-                xs={{ size: 12, offset: 3 }}
-                style={{ display: "flex", flexDirection: "row" }}
-              >
-                <UserControls
-                  id={rental._id}
-                  deleteRental={this.deleteRental}
-                />
-
-                <div className="mt-3 ml-5">
-                  <Rental {...rental} />
-                </div>
-              </Col>
-            </Row>
-          </Fragment>
+          <Row key={rental._id}>
+            <Col
+              className="mt-3"
+              xs={{ size: 3 }}
+              style={{ display: "flex", flexDirection: "row" }}
+            >
+              <UserControls id={rental._id} deleteRental={this.deleteRental} />
+            </Col>
+            <Col>
+              <div className="mt-3 ml-5">
+                <Rental {...rental} />
+              </div>
+            </Col>
+          </Row>
         );
       });
     } else {
       rentalsDisplay = false;
     }
     return (
-      <div style={{ textAlign: "left", overflow: "hidden" }}>
+      <Container>
         <Modal isOpen={this.state.alert}>
           <ModalHeader>Success!</ModalHeader>
           <ModalBody>
@@ -118,36 +114,34 @@ class UserDashboard extends Component {
             </Button>
           </ModalFooter>
         </Modal>
-        <Container>
-          {/* <UserSidebar /> */}
-          {rentalsDisplay !== false && (
-            <Row style={{ borderBottom: "0.5px solid gainsboro" }}>
-              <Col className="mt-2 text-center" xs={{ size: 6, offset: 4 }}>
-                <h4>
-                  {this.props.user.user.slice(0, 1).toUpperCase() +
-                    this.props.user.user.slice(1)}
-                  's Rental Listings
-                </h4>
-              </Col>
-            </Row>
-          )}
-
-          {rentalsDisplay}
-          <Row className="mt-4" style={{ borderTop: "0.5px solid gray" }}>
-            <Col className="mt-4 text-center" xs={{ size: 6, offset: 4 }}>
-              <Link to="/add-rental">
-                <Button color="primary" size="lg">
-                  {!userRentals ? (
-                    <h4>List a Property for Rent</h4>
-                  ) : (
-                    <h4>Add a Rental Listing</h4>
-                  )}
-                </Button>
-              </Link>
+        {/* <UserSidebar /> */}
+        {rentalsDisplay !== false && (
+          <Row style={{ borderBottom: "0.5px solid gainsboro" }}>
+            <Col className="mt-2 text-center" xs={{ size: 6, offset: 4 }}>
+              <h4>
+                {this.props.user.user.slice(0, 1).toUpperCase() +
+                  this.props.user.user.slice(1)}
+                's Rental Listings
+              </h4>
             </Col>
           </Row>
-        </Container>
-      </div>
+        )}
+
+        {rentalsDisplay}
+        <Row className="mt-4" style={{ borderTop: "0.5px solid gray" }}>
+          <Col className="mt-4 text-center" xs={{ size: 6, offset: 4 }}>
+            <Link to="/add-rental">
+              <Button color="primary" size="lg">
+                {!userRentals ? (
+                  <h4>List a Property for Rent</h4>
+                ) : (
+                  <h4>Add a Rental Listing</h4>
+                )}
+              </Button>
+            </Link>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
