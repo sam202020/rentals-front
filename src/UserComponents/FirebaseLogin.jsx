@@ -24,6 +24,7 @@ const addUserToDB = async user => {
 
 class FirebaseLogin extends React.Component {
   uiConfig = {
+    credentialHelper: 'none',
     callbacks: {
       signInSuccessWithAuthResult: function(authResult) {
         if (authResult.additionalUserInfo.isNewUser)
