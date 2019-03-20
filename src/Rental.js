@@ -33,6 +33,9 @@ class Rental extends React.Component {
   };
 
   phoneFormat = number => {
+    if (typeof number === "undefined") {
+      return "(888) 888-8888";
+    }
     const numStr = number.toString();
     let newStr = numStr.replace(/-/g, "");
     if (newStr.length < 9) newStr = "732" + newStr;
@@ -264,9 +267,5 @@ class Rental extends React.Component {
     );
   }
 }
-
-Rental.proptypes = {
-  location: PropTypes.string
-};
 
 export default withRouter(Rental);
