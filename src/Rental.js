@@ -107,6 +107,9 @@ class Rental extends React.Component {
   };
 
   numberFormat = number => {
+    if (typeof number === "undefined") {
+      return "3";
+    }
     return number.replace(/\D/g, "");
   };
 
