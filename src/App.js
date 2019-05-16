@@ -7,7 +7,7 @@ import { fetchRentals, saveCurrentUser } from "./actions";
 import Chat from "./Chat/Chat.jsx";
 import NavComp from "./NavComp";
 import ScrollControl from "./ScrollControl";
-import RentalsList from "./RentalsList";
+import RentalsList from "./rentalslist";
 import AddRental from "./AddRental";
 import Payment from "./Payment";
 import EditRental from "./EditRental";
